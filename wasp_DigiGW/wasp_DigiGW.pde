@@ -71,18 +71,19 @@ void setup()
 
 void loop()
 {
-  temp = Agriculture.getTemperature();
-  temp = to_string(temp);
   ///////////////////////////////////////////
   // 1. Create ASCII frame
   ///////////////////////////////////////////  
 
   // create new frame
   frame.createFrame(ASCII);  
+  frame.setFrameSize(92);
   
   // add frame fields
-  frame.addSensor(SENSOR_STR, "sensor_Temperatura");
-  frame.addSensor(SENSOR_AGR_TC, temp ); 
+  frame.addSensor(SENSOR_AGR_TC, Agriculture.getTemperature());
+
+  frame.showFrame();
+  
   
 
   ///////////////////////////////////////////
@@ -96,8 +97,6 @@ void loop()
   if( error == 0 )
   {
     USB.println(F("send ok"));
-    USB.print("se envio la temperatura de ");
-    USB.println(temp);
     
     // blink green LED
     Utils.blinkGreenLED();
