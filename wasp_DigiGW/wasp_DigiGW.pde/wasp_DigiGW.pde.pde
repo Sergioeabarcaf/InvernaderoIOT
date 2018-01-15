@@ -1,12 +1,9 @@
 /*  
- *  ------ [ZB_06] - get RSSI from last received packet  -------- 
+ *  ------ [ZB_03] - send packets to a gateway -------- 
  *  
- *  Explanation: This program shows how to get RSSI value from the 
- *  last received packet. For this protocol, there is an API function which
- *  shows this information. Before running this example, make sure there 
- *  is another emitter sending packets to this XBee module in order to 
- *  receive information.
- *
+ *  Explanation: This program shows how to send packets to a gateway
+ *  indicating the MAC address of the receiving XBee module.  
+ *  
  *  Copyright (C) 2015 Libelium Comunicaciones Distribuidas S.L. 
  *  http://www.libelium.com 
  *  
@@ -29,86 +26,95 @@
  */
 
 #include <WaspXBeeZB.h>
+#include <WaspFrame.h>
+#include <WaspSensorAgr_v30.h>
+
+// Destination MAC address
+//////////////////////////////////////////
+char RX_ADDRESS[] = "0013A20040DC588F";
+//////////////////////////////////////////
+
+// Define the Waspmote ID
+char WASPMOTE_ID[] = "Waspmote";
+
 
 // define variable
 uint8_t error;
+float temp;
 
-// variable to store RSSI
-int rssi;
 
 
 void setup()
-{  
+{
   // init USB port
   USB.ON();
-  USB.println(F("Get RSSI example"));
+  USB.println(F("Sending temperatura a Coordinador"));
 
-  //////////////////////////
-  // 1. init XBee
-  //////////////////////////
+  
+  // store Waspmote identifier in EEPROM memory
+  frame.setID( WASPMOTE_ID );
+  
+  // init XBee
   xbeeZB.ON();
+
+  Agriculture.ON();
   
   delay(3000);
-    
+  
   //////////////////////////
   // 2. check XBee's network parameters
   //////////////////////////
   checkNetworkParams();
-
+  
 }
-
 
 
 void loop()
-{ 
+{
+  temp = Agriculture.getTemperature();
+  temp = to_string(temp);
+  ///////////////////////////////////////////
+  // 1. Create ASCII frame
+  ///////////////////////////////////////////  
 
+  // create new frame
+  frame.createFrame(ASCII);  
+  
+  // add frame fields
+  frame.addSensor(SENSOR_STR, "sensor_Temperatura");
+  frame.addSensor(SENSOR_AGR_TC, temp ); 
+  
 
-  // receive XBee packet (wait for 10 seconds)
-  error = xbeeZB.receivePacketTimeout( 10000 );
+  ///////////////////////////////////////////
+  // 2. Send packet
+  ///////////////////////////////////////////  
 
-  // check answer  
-  if( error == 0 ) 
+  // send XBee packet
+  error = xbeeZB.send( RX_ADDRESS, frame.buffer, frame.length );   
+  
+  // check TX flag
+  if( error == 0 )
   {
-    // Show data stored in '_payload' buffer indicated by '_length'
-    USB.print(F("Data: "));  
-    USB.println( xbeeZB._payload, xbeeZB._length);
-
-    // Show data stored in '_payload' buffer indicated by '_length'
-    USB.print(F("Length: "));  
-    USB.println( xbeeZB._length,DEC);
-
-    // Getting RSSI using the API function
-    // This function returns the last received packet's RSSI
-    xbeeZB.getRSSI();
-
-    // check AT flag  
-    if( xbeeZB.error_AT == 0 )
-    {      
-      USB.print(F("getRSSI(dBm): ")); 
-
-      //get rssi from getRSSI function and make conversion
-      rssi = xbeeZB.valueRSSI[0];
-      rssi *= -1;  
-      USB.println(rssi,DEC);
-    }
-    USB.println();
+    USB.println(F("send ok"));
+    USB.print("se envio la temperatura de ");
+    USB.println(temp);
+    
+    // blink green LED
+    Utils.blinkGreenLED();
+    
   }
-  else
+  else 
   {
-    // Print error message:
-    /*
-     * '7' : Buffer full. Not enough memory space
-     * '6' : Error escaping character within payload bytes
-     * '5' : Error escaping character in checksum byte
-     * '4' : Checksum is not correct	  
-     * '3' : Checksum byte is not available	
-     * '2' : Frame Type is not valid
-     * '1' : Timeout when receiving answer   
-     */
-    USB.print(F("Error receiving a packet:"));
-    USB.println(error,DEC);     
+    USB.println(F("send error"));
+    
+    // blink red LED
+    Utils.blinkRedLED();
   }
+
+  // wait for five seconds
+  delay(20000);
 }
+
 
 
 /*******************************************
@@ -174,7 +180,6 @@ void checkNetworkParams()
   USB.println();
 
 }
-
 
 
 

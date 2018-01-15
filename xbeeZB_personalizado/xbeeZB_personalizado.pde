@@ -13,20 +13,15 @@ void setup()
   USB.ON();
   xbeeZB.ON();
 
-  if(!xbeeZB.sendCommandAT("CH#")) 
-  {
-    USB.print(F("Channel: "));
-    USB.printHex(xbeeZB.commandAT[0]);
-    USB.println();
-  }
-  else 
-  {
-    USB.println("at error");
-  }
+  xbeeZB.getOwnMacLow();
 
+  xbeeZB.setPAN(panID);
+  xbeeZB.getPAN();
 
   //Almacenar los cambios para cuando se reinicie.
   //xbeeZB.writeValues();
+
+  USB.println("Setup terminado");
 }
 
 
