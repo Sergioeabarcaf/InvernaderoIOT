@@ -1,97 +1,64 @@
-/*  
- *  ------ [ZB_03] - send packets to a gateway -------- 
- *  
- *  Explanation: This program shows how to send packets to a gateway
- *  indicating the MAC address of the receiving XBee module.  
- *  
- *  Copyright (C) 2015 Libelium Comunicaciones Distribuidas S.L. 
- *  http://www.libelium.com 
- *  
- *  This program is free software: you can redistribute it and/or modify 
- *  it under the terms of the GNU General Public License as published by 
- *  the Free Software Foundation, either version 3 of the License, or 
- *  (at your option) any later version. 
- *  
- *  This program is distributed in the hope that it will be useful, 
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of 
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- *  GNU General Public License for more details. 
- *  
- *  You should have received a copy of the GNU General Public License 
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>. 
- *  
- *  Version:           0.2
- *  Design:            David Gascón 
- *  Implementation:    Yuri Carmona
- */
+//Envio de temperatura hacia GW y visualizacion en DIGI REMOTE CLOUD
+// Programa desarrollado en PROTEINLAB por Sergio Abarca F.
 
 #include <WaspXBeeZB.h>
 #include <WaspFrame.h>
 #include <WaspSensorAgr_v30.h>
 
-// Destination MAC address
-//////////////////////////////////////////
+//MAC de GW Digi
 char RX_ADDRESS[] = "0013A20040DC588F";
-//////////////////////////////////////////
 
-// Define the Waspmote ID
+
+//ID
 char WASPMOTE_ID[] = "Waspmote";
 
 
-// define variable
+//Variables a usar
 uint8_t error;
 float temp;
-
+char tempSTR[15];
 
 
 void setup()
 {
-  // init USB port
+  //Inicializacion de objetos
   USB.ON();
-  USB.println(F("Sending temperatura a Coordinador"));
-
-  
-  // store Waspmote identifier in EEPROM memory
-  frame.setID( WASPMOTE_ID );
-  
-  // init XBee
+  USB.println(F("Enviando temperatura a Coordinador"));
   xbeeZB.ON();
-
   Agriculture.ON();
+
+  //Configurar ID de Frame
+  frame.setID( WASPMOTE_ID );
   
   delay(3000);
   
-  //////////////////////////
-  // 2. check XBee's network parameters
-  //////////////////////////
   checkNetworkParams();
-  
 }
 
 
 void loop()
 {
-  ///////////////////////////////////////////
-  // 1. Create ASCII frame
-  ///////////////////////////////////////////  
-
-  // create new frame
+  //Creacion de Frame en modo ASCII
   frame.createFrame(ASCII);  
   frame.setFrameSize(92);
-  
-  // add frame fields
+
+  //Agregar contenido al Frame
   frame.addSensor(SENSOR_AGR_TC, Agriculture.getTemperature());
-
+  
+  //Mostrar Frame como flag
   frame.showFrame();
-  
-  
 
-  ///////////////////////////////////////////
-  // 2. Send packet
-  ///////////////////////////////////////////  
+  // 1- Enviar Frame a Xbee
+  //error = xbeeZB.send( RX_ADDRESS, frame.buffer, frame.length );   
 
-  // send XBee packet
-  error = xbeeZB.send( RX_ADDRESS, frame.buffer, frame.length );   
+  // 2- Enviar dato obtenido de sensor T° a Xbee
+  //2.1 - Obtener temperatura y transformarlo a String
+  temp = Agriculture.getTemperature();
+  Utils.float2String (temp, tempSTR, 3);
+  USB.println(tempSTR);
+ 
+  //Enviar dato directo a Xbee
+  error = xbeeZB.send( RX_ADDRESS, tempSTR);
   
   // check TX flag
   if( error == 0 )
