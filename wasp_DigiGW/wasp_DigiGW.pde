@@ -38,20 +38,22 @@ void setup()
 
 void loop()
 {
+  //USB.println(F("FRAME"));
   //Creacion de Frame en modo ASCII
-  frame.createFrame(ASCII);  
-  frame.setFrameSize(92);
+  //frame.createFrame(ASCII);  
+  //frame.setFrameSize(92);
 
   //Agregar contenido al Frame
-  frame.addSensor(SENSOR_AGR_TC, Agriculture.getTemperature());
+  //frame.addSensor(SENSOR_AGR_TC, Agriculture.getTemperature());
   
   //Mostrar Frame como flag
-  frame.showFrame();
+  //frame.showFrame();
 
   // 1- Enviar Frame a Xbee
   //error = xbeeZB.send( RX_ADDRESS, frame.buffer, frame.length );   
 
   // 2- Enviar dato obtenido de sensor T° a Xbee
+  USB.println(F("STRING"));
   //2.1 - Obtener temperatura y transformarlo a String
   temp = Agriculture.getTemperature();
   Utils.float2String (temp, tempSTR, 3);
@@ -63,7 +65,8 @@ void loop()
   // check TX flag
   if( error == 0 )
   {
-    USB.println(F("send ok"));
+    USB.println(F("Envio OK"));
+    USB.println(" ");
     
     // blink green LED
     Utils.blinkGreenLED();
@@ -71,7 +74,9 @@ void loop()
   }
   else 
   {
-    USB.println(F("send error"));
+    USB.println(F("ERROR"));
+    USB.println(error);
+    USB.println(" ");
     
     // blink red LED
     Utils.blinkRedLED();
