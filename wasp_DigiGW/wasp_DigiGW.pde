@@ -77,18 +77,11 @@ void loop()
     Utils.blinkRedLED();
   }
 
-  // wait for five seconds
-  delay(20000);
+  // Espera de 30 segundos
+  delay(30000);
 }
 
-
-
-/*******************************************
- *
- *  checkNetworkParams - Check operating
- *  network parameters in the XBee module
- *
- *******************************************/
+// Revisar parametros de conexion
 void checkNetworkParams()
 {
   // 1. get operating 64-b PAN ID
