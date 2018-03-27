@@ -82,8 +82,8 @@ void loop()
     Utils.blinkRedLED();
   }
 
-  // Espera de 30 segundos
-  delay(30000);
+  // Espera de 2 minutos
+  delay(120000);
 }
 
 // Revisar parametros de conexion
