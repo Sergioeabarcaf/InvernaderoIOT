@@ -1,55 +1,59 @@
-// Envio de Temperatura, Humedad y Presion hacia GW via FRAME y visualizacion en DIGI REMOTE CLOUD
+// Envio de Temperatura, Humedad y Presion hacia GW via TEXTO y visualizacion en DIGI REMOTE CLOUD
 // La visualizacion de los datos esta en base64, decodificar para entender el mensaje
 // Programa desarrollado en PROTEINLAB por Sergio Abarca F.
 
 #include <WaspXBeeZB.h>
-#include <WaspFrame.h>
 #include <WaspSensorAgr_v30.h>
 
 //MAC de GW Digi
 char RX_ADDRESS[] = "0013A20040DC588F";
 
-//ID que usara
+//ID
 char WASPMOTE_ID[] = "Waspmote";
 
 //Variables a usar
 uint8_t error;
+float temp, hum, pres;
+char tempSTR[15],humSTR[15],presSTR[15],msjSTR[100];
 
 
 void setup()
 {
   //Inicializacion de objetos
   USB.ON();
-  USB.println(F("Enviando Temperatura, Humedad y Presion a Coordinador FRAME"));
   xbeeZB.ON();
   Agriculture.ON();
-
-  //Configurar ID de Frame
-  frame.setID( WASPMOTE_ID );
-
-  delay(3000);
-
   checkNetworkParams();
+  USB.println(F("Enviando Temperatura, Humedad y Presion a Coordinador TEXTO"));
+  delay(3000);
 }
 
 
 void loop()
 {
-  //Creacion de Frame en modo ASCII
-  frame.createFrame(ASCII);
-  frame.setFrameSize(92);
+  //Obtener temperatura, humedad, presion y transformarlo a String con 3 decimales
+  temp = Agriculture.getTemperature();
+  hum = Agriculture.getHumidity();
+  pres = Agriculture.getPressure();
+  Utils.float2String (temp, tempSTR, 3);
+  Utils.float2String (hum, humSTR, 3);
+  Utils.float2String (pres, humSTR, 3);
+  
+  //Concatenar el las variables en un solo gran mensaje que contenga identificadores de donde se envia
+  // y tambien contenga un separador ($)
+  strcat(msjSTR,WASPMOTE_ID);
+  strcat(msjSTR,"$T:");
+  strcat(msjSTR,tempSTR);
+  strcat(msjSTR,"$H:");
+  strcat(msjSTR,humSTR);
+  strcat(msjSTR,"$P:");
+  strcat(msjSTR,humSTR);
+  
+  //Mostrar el mensaje que se envia como flag
+  USB.println(msjSTR);
 
-  //Agregar contenido al Frame
-  frame.addSensor(SENSOR_AGR_TC, Agriculture.getTemperature());
-  frame.addSensor(SENSOR_AGR_HUM, Agriculture.getHumidity());
-  frame.addSensor(SENSOR_AGR_PRES, Agriculture.getPressure());
-
-
-  //Mostrar Frame a enviar
-  frame.showFrame();
-
-  //Enviar Frame
-  error = xbeeZB.send( RX_ADDRESS, frame.buffer, frame.length );  
+  //Envio del mensaje
+  error = xbeeZB.send( RX_ADDRESS, msjSTR );
 
   // Comprobar que el envio sea correcto
   if ( error == 0 )
@@ -87,4 +91,3 @@ void checkNetworkParams()
   }
   USB.println(F("\nConectado en la red"));
 }
-
