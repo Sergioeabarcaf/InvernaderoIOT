@@ -1,5 +1,6 @@
 //Envio de temperatura hacia GW y visualizacion en DIGI REMOTE CLOUD
 // Programa desarrollado en PROTEINLAB por Sergio Abarca F.
+
 #include <WaspXBeeZB.h>
 #include <WaspFrame.h>
 #include <WaspSensorAgr_v30.h>
@@ -15,14 +16,14 @@ char WASPMOTE_ID[] = "Waspmote";
 //Variables a usar
 uint8_t error;
 float temp, hum, pres;
-char tempSTR[15],humSTR[15],presSTR[15],msjSTR[100];
+char tempSTR[15];
 
 
 void setup()
 {
   //Inicializacion de objetos
   USB.ON();
-  USB.println(F("Enviando Temperatura, Humedad y Presion a Coordinador TEXTO"));
+  USB.println(F("Enviando Temperatura, Humedad y Presion a Coordinador FRAME"));
   xbeeZB.ON();
   Agriculture.ON();
 
@@ -37,51 +38,32 @@ void setup()
 
 void loop()
 {
-  //USB.println(F("FRAME"));
+  USB.println(F("FRAME"));
   //Creacion de Frame en modo ASCII
-  //frame.createFrame(ASCII);  
-  //frame.setFrameSize(92);
+  frame.createFrame(ASCII);  
+  frame.setFrameSize(92);
 
   //Agregar contenido al Frame
-  //frame.addSensor(SENSOR_AGR_TC, Agriculture.getTemperature());
-  //frame.addSensor(SENSOR_AGR_HUM, Agriculture.getHumidity());
-  //frame.addSensor(SENSOR_AGR_PRES, Agriculture.getPressure());
+  frame.addSensor(SENSOR_AGR_TC, Agriculture.getTemperature());
+  frame.addSensor(SENSOR_AGR_HUM, Agriculture.getHumidity());
+  frame.addSensor(SENSOR_AGR_PRES, Agriculture.getPressure());
   
   
   //Mostrar Frame como flag
-  //frame.showFrame();
+  frame.showFrame();
 
   // 1- Enviar Frame a Xbee
-  //error = xbeeZB.send( RX_ADDRESS, frame.buffer, frame.length );   
+  error = xbeeZB.send( RX_ADDRESS, frame.buffer, frame.length );   
 
   // 2- Enviar dato obtenido de sensor T° a Xbee
-  USB.println(F("STRING"));
+  //USB.println(F("STRING"));
   //2.1 - Obtener temperatura y transformarlo a String
-  temp = Agriculture.getTemperature();
-  hum = Agriculture.getHumidity();
-  pres = Agriculture.getPressure();
-  Utils.float2String (temp, tempSTR, 3);
-  Utils.float2String (hum, humSTR, 3);
-  Utils.float2String (pres, humSTR, 3);
-  
-  USB.println(tempSTR);
-  USB.println(humSTR);
-  USB.println(presSTR);
-
-  strcat(msjSTR,WASPMOTE_ID);
-  strcat(msjSTR,"$T:");
-  strcat(msjSTR,tempSTR);
-  strcat(msjSTR,"$H:");
-  strcat(msjSTR,humSTR);
-  strcat(msjSTR,"$P:");
-  strcat(msjSTR,humSTR);
-
-  USB.println(msjSTR);
-
-  
+  //temp = Agriculture.getTemperature();
+  //Utils.float2String (temp, tempSTR, 3);
+  //USB.println(tempSTR);
  
   //Enviar dato directo a Xbee
-  error = xbeeZB.send( RX_ADDRESS, msjSTR );
+  //error = xbeeZB.send( RX_ADDRESS, tempSTR);
   
   // check TX flag
   if( error == 0 )
