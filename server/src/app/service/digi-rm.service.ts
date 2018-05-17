@@ -5,7 +5,7 @@ import 'rxjs/Rx';
 @Injectable()
 export class DigiRmService {
 
-  private header = new HttpHeaders();
+
   private user:string = "idiProteinlab";
   private pass:string = "Proteinlab2017!";
 
@@ -17,10 +17,12 @@ export class DigiRmService {
   // console.log(btoa("password")); // cGFzc3dvcmQ=
 
   getData(){
-    this.header.set('Content-type', 'application/json');
-    this.header.set('Authorization', `Basic ${ btoa(this.user) }:${ btoa(this.pass) }`);
-
-    console.log(this.header);
+    let header = new HttpHeaders();
+    const key:string = `Basic ${ btoa(this.user) }:${ btoa(this.pass) }`;
+    console.log(key);
+    header.append('Content-Type', 'application/json');
+    header.append('Authorization', key );
+    console.log(header.get('Authorization'));
 
 
     return this.http.get( this.urlBase ).map( res => {
