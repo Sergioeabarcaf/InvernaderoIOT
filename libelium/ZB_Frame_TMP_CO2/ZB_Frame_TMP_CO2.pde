@@ -1,6 +1,7 @@
 /*
- * Obtener Temperatura, Humedad y Presión
- * Programa desarrollado en PROTEINLAB por Sergio Abarca F 
+ * Obtener Temperatura, Humedad, Presión y CO2 
+ * en un Frame via ZB
+ * Programa desarrollado en PROTEINLAB por Sergio Abarca F.
  */
 
 
