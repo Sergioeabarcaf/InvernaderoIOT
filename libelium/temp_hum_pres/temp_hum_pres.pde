@@ -12,17 +12,20 @@ void setup()
   //Inicializacion de objetos
   USB.ON();
   USB.println(F("Obtener Temperatura, Humedad y Presión"));
-  Agriculture.ON();
-  delay(3000);
+  delay(1000);
 }
 
 
 void loop()
 {
+  Agriculture.ON();
+  delay(500);
+  
   t = Agriculture.getTemperature();
   h  = Agriculture.getHumidity();
   p = Agriculture.getPressure();
 
+  Agriculture.OFF();
   
   USB.print("Temperatura en grados celsius: ");
   USB.println(t);
@@ -31,8 +34,10 @@ void loop()
   USB.print("Presión atmosferica en Pa: ");
   USB.println(p);
 
-
-  // Pausa de 60 segundos.
-  delay(60000);
+  // Dormir por 3 minutos
+  USB.println("Me voy a dormir una pequeña siesta :). Ya vengo! ");
+  PWR.deepSleep("00:00:03:00", RTC_OFFSET, RTC_ALM1_MODE1, ALL_OFF);
+  USB.ON();
+  USB.println("Ya desperte!!!!");
   
 }
