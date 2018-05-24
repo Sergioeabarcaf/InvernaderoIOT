@@ -32,8 +32,6 @@ void setup()
   USB.println("Obtener Temperatura, Humedad, Presion y CO2 desde Sensor Board V3");
   //Calibrar Sensor
   CO2Sensor.setCalibrationPoints(voltages, concentrations, numPoints);
-  Gases.ON();
-  CO2Sensor.ON();
 
   delay(1000);
 }
@@ -41,9 +39,16 @@ void setup()
 
 void loop()
 {
+  Gases.ON();
+
+  delay(500);
   t = Gases.getTemperature();
   h  = Gases.getHumidity();
   p = Gases.getPressure();
+
+  Gases.OFF();
+
+  delay(500);
 
   USB.println("=================================");
   
@@ -56,8 +61,13 @@ void loop()
 
   USB.println("=================================");
 
+  CO2Sensor.ON();
+  delay(500);
+
   float CO2Vol = CO2Sensor.readVoltage();
   float CO2PPM = CO2Sensor.readConcentration();
+
+  CO2Sensor.OFF();
 
   USB.print("Voltaje sensor en Volt: ");
   USB.println(CO2Vol);
@@ -67,6 +77,9 @@ void loop()
 
   USB.println("=================================");
 
-
-  delay(2000);
+  // Dormir por 3 minutos
+  USB.println("Me voy a dormir una pequeña siesta :). Ya vengo! ");
+  PWR.deepSleep("00:00:03:00", RTC_OFFSET, RTC_ALM1_MODE1, ALL_OFF);
+  USB.ON();
+  USB.println("Ya desperte!!!!");
 }
