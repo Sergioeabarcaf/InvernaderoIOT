@@ -29,6 +29,9 @@ float voltages[] =       { POINT1_VOLT_CO2, POINT2_VOLT_CO2, POINT3_VOLT_CO2 };
 void setup()
 {
   USB.ON();
+
+  pinMode(GP_I2C_MAIN_EN, OUTPUT);
+  
   USB.println("Obtener Temperatura, Humedad, Presion y CO2 desde Sensor Board V3");
   //Calibrar Sensor
   CO2Sensor.setCalibrationPoints(voltages, concentrations, numPoints);
@@ -39,14 +42,16 @@ void setup()
 
 void loop()
 {
-  Gases.ON();
+
+  digitalWrite(GP_I2C_MAIN_EN, HIGH);
+  BME.ON();
 
   delay(500);
-  t = Gases.getTemperature();
-  h  = Gases.getHumidity();
-  p = Gases.getPressure();
-
-  Gases.OFF();
+  t = BME.getTemperature(BME280_OVERSAMP_16X, BME280_FILTER_COEFF_OFF);
+  h = BME.getHumidity(BME280_OVERSAMP_16X);
+  p = BME.getPressure(BME280_OVERSAMP_16X, BME280_FILTER_COEFF_OFF);
+  
+  digitalWrite(GP_I2C_MAIN_EN, LOW);
 
   delay(500);
 
