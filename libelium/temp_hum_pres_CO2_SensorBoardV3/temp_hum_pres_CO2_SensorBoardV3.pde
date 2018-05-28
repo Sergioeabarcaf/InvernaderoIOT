@@ -29,31 +29,21 @@ float voltages[] =       { POINT1_VOLT_CO2, POINT2_VOLT_CO2, POINT3_VOLT_CO2 };
 void setup()
 {
   USB.ON();
-
-  pinMode(GP_I2C_MAIN_EN, OUTPUT);
-  
   USB.println("Obtener Temperatura, Humedad, Presion y CO2 desde Sensor Board V3");
   //Calibrar Sensor
   CO2Sensor.setCalibrationPoints(voltages, concentrations, numPoints);
+  Gases.ON();
+  CO2Sensor.ON();
 
-  delay(1000);
+  delay(120000);
 }
 
 
 void loop()
 {
-
-  digitalWrite(GP_I2C_MAIN_EN, HIGH);
-  BME.ON();
-
-  delay(500);
-  t = BME.getTemperature(BME280_OVERSAMP_16X, BME280_FILTER_COEFF_OFF);
-  h = BME.getHumidity(BME280_OVERSAMP_16X);
-  p = BME.getPressure(BME280_OVERSAMP_16X, BME280_FILTER_COEFF_OFF);
-  
-  digitalWrite(GP_I2C_MAIN_EN, LOW);
-
-  delay(500);
+  t = Gases.getTemperature();
+  h  = Gases.getHumidity();
+  p = Gases.getPressure();
 
   USB.println("=================================");
   
@@ -66,13 +56,8 @@ void loop()
 
   USB.println("=================================");
 
-  CO2Sensor.ON();
-  delay(500);
-
   float CO2Vol = CO2Sensor.readVoltage();
   float CO2PPM = CO2Sensor.readConcentration();
-
-  CO2Sensor.OFF();
 
   USB.print("Voltaje sensor en Volt: ");
   USB.println(CO2Vol);
@@ -82,9 +67,6 @@ void loop()
 
   USB.println("=================================");
 
-  // Dormir por 3 minutos
-  USB.println("Me voy a dormir una pequeña siesta :). Ya vengo! ");
-  PWR.deepSleep("00:00:03:00", RTC_OFFSET, RTC_ALM1_MODE1, ALL_OFF);
-  USB.ON();
-  USB.println("Ya desperte!!!!");
+
+  delay(2000);
 }
