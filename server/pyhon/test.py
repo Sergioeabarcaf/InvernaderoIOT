@@ -10,14 +10,23 @@ import json
 
 import firebase_admin
 from firebase_admin import credentials
+from firebase_admin import db
+
 
 cred = credentials.Certificate('libelium-91af3-firebase-adminsdk-uw61q-d655a2f86e.json')
 default_app = firebase_admin.initialize_app(cred)
 
+
+# Se envian los datos a firebase en data realtime con la ruta del dispositivo
+# y el valor de los parametros en string
 def enviarFirestore(disp,data):
     algo = data.split(":")
+    root = db.reference()
+    new_user = root.child(disp).push({
 
+    })
 
+# Limpiar la data sacando el id del dispositivo y los parametros para enviarlos a firestore
 def obtenerData(data):
     algo = data.split("#")
     disp = algo[2]
@@ -25,33 +34,22 @@ def obtenerData(data):
         enviarFirestore(disp, algo[x])
 
 
-# create HTTP basic authentication string, this consists of
-# "username:password" base64 encoded
+#obtener datos desde DiGi remote Manager
 auth = base64.encodestring("%s:%s"%(username,password))[:-1]
 webservice = httplib.HTTPSConnection("remotemanager.digi.com")
-
-# to what URL to send the request with a given HTTP method
 webservice.putrequest("GET", "/ws/v1/streams/inventory")
-
-# add the authorization string into the HTTP header
 webservice.putheader("Authorization", "Basic %s"%auth)
-
 webservice.endheaders()
-
-# get the response
 response = webservice.getresponse()
-statuscode = response.status
-statusmessage = response.reason
 response_body = response.read()
 
-# print the output to standard out
-print (statuscode, statusmessage)
-# print response_body
-
+#transformar el texto a JSON
 test = json.loads(response_body)
+
+#Contar la cantidad de dispositivos que existen en el registro
 maxI = int(test['count'])
 
+#por cada dispositivo extraer el valor y enviar a funcion obtenerData
 for i in range(1, maxI):
     data = base64.b64decode(test['list'][i]['value'])
-    print data
     obtenerData(data)
