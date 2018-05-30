@@ -4,34 +4,30 @@ password = "Proteinlab2017!" # enter your password
 # This example establishes a https connection, but doesn't provide the server certificate validation.
 # Production code should implement certificate validation.
 # -------------------------------------------------
+
 import httplib
 import base64
 import json
-
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import db
-
-
-cred = credentials.Certificate('libelium-91af3-firebase-adminsdk-uw61q-d655a2f86e.json')
-default_app = firebase_admin.initialize_app(cred)
-
+#Esta libreria se instala desde https://github.com/mikexstudios/python-firebase
+from firebase import Firebase
 
 # Se envian los datos a firebase en data realtime con la ruta del dispositivo
 # y el valor de los parametros en string
 def enviarFirestore(disp,data):
     algo = data.split(":")
-    root = db.reference()
-    new_user = root.child(disp).push({
-
-    })
+    url = "https://libelium-91af3.firebaseio.com/" + disp
+    f = Firebase(url)
+    r = f.push({algo[0]: algo[1]})
+    print r
 
 # Limpiar la data sacando el id del dispositivo y los parametros para enviarlos a firestore
 def obtenerData(data):
     algo = data.split("#")
     disp = algo[2]
+    print algo
     for x in range (4, len(algo)):
-        enviarFirestore(disp, algo[x])
+        if(len(algo[x]) > 0):
+            enviarFirestore(disp, algo[x])
 
 
 #obtener datos desde DiGi remote Manager
