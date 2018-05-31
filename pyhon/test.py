@@ -15,11 +15,14 @@ from firebase import Firebase
 # y el valor de los parametros en string
 def enviarFirestore(timestamp,dispositivo,data):
     dataSend = {}
+    dataValues = {}
     dataSend["timestamp"] = timestamp
     for x in range (0, len(data)):
         parametro = data[x].split(":")
-        dataSend[str(parametro[0])] = parametro[1]
-    url = "https://libelium-91af3.firebaseio.com/" + dispositivo
+        dataValues[str(parametro[0])] = parametro[1]
+    dataSend["values"] = dataValues
+    dataSend["device"] = dispositivo
+    url = "https://libelium-91af3.firebaseio.com/estacionMetereologica"
     f = Firebase(url)
     r = f.push(dataSend)
 
