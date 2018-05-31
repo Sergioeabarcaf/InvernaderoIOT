@@ -14,13 +14,18 @@ from firebase import Firebase
 # Se envian los datos a firebase en data realtime con la ruta del dispositivo
 # y el valor de los parametros en string
 def enviarFirestore(timestamp,dispositivo,data):
-    algo = data.split(":")
+    dataSend = {}
+    dataSend["timestamp"] = [timestamp]
+    for x in range (0, len(data)):
+        parametro = data[x].split(":")
+        dataSend[str(parametro[0])] = [parametro[1]]
+    dataSendStr = json.dumps(dataSend)
     url = "https://libelium-91af3.firebaseio.com/" + dispositivo
     f = Firebase(url)
-    #r = f.push({algo[0]: algo[1], 'timestamp': timestamp})
-    print r
+    r = f.push(dataSendStr)
 
 def eliminarVacios(data):
+    dataSinVacios = []
     for x in range (4, len(data)):
         if(len(data[x]) > 0):
             dataSinVacios.append(data[x])
@@ -30,9 +35,7 @@ def eliminarVacios(data):
 def obtenerData(timestamp,data):
     dataLimpia = data.split("#")
     dispositivo = dataLimpia[2]
-    print dataLimpia
     dataLimpia = eliminarVacios(dataLimpia)
-    print dataLimpia
     enviarFirestore(timestamp,dispositivo,dataLimpia)
 
 
