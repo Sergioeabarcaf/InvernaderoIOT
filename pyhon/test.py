@@ -15,14 +15,13 @@ from firebase import Firebase
 # y el valor de los parametros en string
 def enviarFirestore(timestamp,dispositivo,data):
     dataSend = {}
-    dataSend["timestamp"] = [timestamp]
+    dataSend["timestamp"] = timestamp
     for x in range (0, len(data)):
         parametro = data[x].split(":")
-        dataSend[str(parametro[0])] = [parametro[1]]
-    dataSendStr = json.dumps(dataSend)
+        dataSend[str(parametro[0])] = parametro[1]
     url = "https://libelium-91af3.firebaseio.com/" + dispositivo
     f = Firebase(url)
-    r = f.push(dataSendStr)
+    r = f.push(dataSend)
 
 def eliminarVacios(data):
     dataSinVacios = []
