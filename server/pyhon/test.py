@@ -13,21 +13,27 @@ from firebase import Firebase
 
 # Se envian los datos a firebase en data realtime con la ruta del dispositivo
 # y el valor de los parametros en string
-def enviarFirestore(disp,data):
+def enviarFirestore(timestamp,dispositivo,data):
     algo = data.split(":")
-    url = "https://libelium-91af3.firebaseio.com/" + disp
+    url = "https://libelium-91af3.firebaseio.com/" + dispositivo
     f = Firebase(url)
-    r = f.push({algo[0]: algo[1]})
+    #r = f.push({algo[0]: algo[1], 'timestamp': timestamp})
     print r
 
+def eliminarVacios(data):
+    for x in range (4, len(data)):
+        if(len(data[x]) > 0):
+            dataSinVacios.append(data[x])
+    return dataSinVacios
+
 # Limpiar la data sacando el id del dispositivo y los parametros para enviarlos a firestore
-def obtenerData(data):
-    algo = data.split("#")
-    disp = algo[2]
-    print algo
-    for x in range (4, len(algo)):
-        if(len(algo[x]) > 0):
-            enviarFirestore(disp, algo[x])
+def obtenerData(timestamp,data):
+    dataLimpia = data.split("#")
+    dispositivo = dataLimpia[2]
+    print dataLimpia
+    dataLimpia = eliminarVacios(dataLimpia)
+    print dataLimpia
+    enviarFirestore(timestamp,dispositivo,dataLimpia)
 
 
 #obtener datos desde DiGi remote Manager
@@ -48,4 +54,5 @@ maxI = int(test['count'])
 #por cada dispositivo extraer el valor y enviar a funcion obtenerData
 for i in range(1, maxI):
     data = base64.b64decode(test['list'][i]['value'])
-    obtenerData(data)
+    timestamp = test['list'][i]['timestamp']
+    obtenerData(timestamp,data)
