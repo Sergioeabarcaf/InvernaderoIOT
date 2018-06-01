@@ -78,8 +78,8 @@ void loop()
   }
 
   // Dormir por 3 minutos
-  USB.println("Me voy a dormir una pequeña siesta :). Ya vengo! ");
-  PWR.deepSleep("00:00:03:00", RTC_OFFSET, RTC_ALM1_MODE1, ALL_OFF);
+  USB.println("Me voy a dormir una pequeña siesta de 30 minutos:). Ya vengo! ");
+  PWR.deepSleep("00:00:30:00", RTC_OFFSET, RTC_ALM1_MODE1, ALL_OFF);
   USB.ON();
   USB.println("Ya desperte!!!!");
   
