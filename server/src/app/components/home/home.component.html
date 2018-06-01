@@ -8,7 +8,18 @@
 <hr>
 <br>
 <div class="container">
-  <div class="row text-center" *ngFor="let objeto of data">
+  <div class="row" *ngFor="let objeto of data">
+    <div class="col-4">
+      <h3>Device: {{ objeto.device}}</h3>
+      <p>Fecha: {{ objeto.timestamp | date:'dd-MMM-yyyy' }}</p>
+      <p>Hora: {{ objeto.timestamp | date:'HH:mm:ss'}}</p>
+    </div>
+    <div class="col-2" *ngFor="let params of objeto.values">
+      <h4>{{ params[0] }} : {{ params[1] }}</h4>
+      <hr>
+    </div>
+  </div>
+  <!-- <div class="row text-center" *ngFor="let objeto of data">
     <div class="col-12 col-md-4">
       <h2>Temperatura</h2>
       <br>
@@ -30,6 +41,6 @@
       <p> 950 UM</p>
       <br>
     </div>
-  </div>
+  </div> -->
 
 </div>
