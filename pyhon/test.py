@@ -5,11 +5,15 @@ password = "Proteinlab2017!" # enter your password
 # Production code should implement certificate validation.
 # -------------------------------------------------
 
+import time
 import httplib
 import base64
 import json
 #Esta libreria se instala desde https://github.com/mikexstudios/python-firebase
 from firebase import Firebase
+
+
+standby = 30
 
 # Se envian los datos a firebase en data realtime con la ruta del dispositivo
 # y el valor de los parametros en string
@@ -40,24 +44,26 @@ def obtenerData(timestamp,data):
     dataLimpia = eliminarVacios(dataLimpia)
     enviarFirestore(timestamp,dispositivo,dataLimpia)
 
+while True:
+    #obtener datos desde DiGi remote Manager
+    auth = base64.encodestring("%s:%s"%(username,password))[:-1]
+    webservice = httplib.HTTPSConnection("remotemanager.digi.com")
+    webservice.putrequest("GET", "/ws/v1/streams/inventory")
+    webservice.putheader("Authorization", "Basic %s"%auth)
+    webservice.endheaders()
+    response = webservice.getresponse()
+    response_body = response.read()
 
-#obtener datos desde DiGi remote Manager
-auth = base64.encodestring("%s:%s"%(username,password))[:-1]
-webservice = httplib.HTTPSConnection("remotemanager.digi.com")
-webservice.putrequest("GET", "/ws/v1/streams/inventory")
-webservice.putheader("Authorization", "Basic %s"%auth)
-webservice.endheaders()
-response = webservice.getresponse()
-response_body = response.read()
+    #transformar el texto a JSON
+    test = json.loads(response_body)
 
-#transformar el texto a JSON
-test = json.loads(response_body)
+    #Contar la cantidad de dispositivos que existen en el registro
+    maxI = int(test['count'])
 
-#Contar la cantidad de dispositivos que existen en el registro
-maxI = int(test['count'])
-
-#por cada dispositivo extraer el valor y enviar a funcion obtenerData
-for i in range(1, maxI):
-    data = base64.b64decode(test['list'][i]['value'])
-    timestamp = test['list'][i]['timestamp']
-    obtenerData(timestamp,data)
+    #por cada dispositivo extraer el valor y enviar a funcion obtenerData
+    for i in range(1, maxI):
+        data = base64.b64decode(test['list'][i]['value'])
+        timestamp = test['list'][i]['timestamp']
+        obtenerData(timestamp,data)
+    print "Termine! ya envie los datos, ahora me ire a dormir por " + str(standby) + " minutos "
+    time.sleep(standby)
