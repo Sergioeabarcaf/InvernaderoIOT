@@ -9,40 +9,30 @@ import { FirebaseService } from '../../service/firebase.service';
 export class HomeComponent {
 
   data:any[] = [];
-  objetoArray:any[] = [];
-  dispositivos:string[] = ["WaspTHP", "WaspTHP_CO2"];
+  valuesArray:any[] = [];
+  paramValue:any[] = [];
 
   constructor(private _firebaseService:FirebaseService) {
     this._firebaseService.getData().subscribe( data => {
+      // Recorrer el JSON que en cada llave contiene un conjunto de datos
       let x:number = 0;
       for( let objeto of Object.keys(data) ){
-        this.objetoArray[0] = data[objeto].device;
-        this.objetoArray[1] = data[objeto].timestamp;
-        let i:number = 2;
+        this.data[x] = data[objeto];
+        let i:number = 0;
         for (let param of Object.keys(data[objeto].values)){
-          this.objetoArray[i] = `${param}:${data[objeto].values[param]}`
+          // extraer el parametro y valor para agregarlos en valuesArray, una vez agregados, limpiar el valuesArray
+          this.paramValue[0] = param;
+          this.paramValue[1] = parseFloat(data[objeto].values[param]);
+          this.valuesArray[i] = this.paramValue;
+          this.paramValue = [];
           i++;
         }
-        this.data[x] = this.objetoArray;
-        this.objetoArray = [];
-        x++;
+        this.data[x].values = this.valuesArray;
+        this.valuesArray = [];
+         x++;
       }
       console.log(this.data);
     });
-    //consulta por los dispositivos asociados a firebase y obtiene la data
-    // for(let i=0; i < this.dispositivos.length; i++){
-    //   this._firebaseService.getData( this.dispositivos[i] ).subscribe( data =>{
-    //     console.log(data)
-    //     // Se obtiene la data eliminando la key
-    //     this.data[i] = Object.values(data)[0];
-    //     // para cada parametro se obtiene su clave y valor
-    //     for(let param of Object.keys(this.data[i])){
-    //       console.log( `${ param } : ${ this.data[i][param] }` );
-    //       this.dataSwap[i].
-    //       this.dataSwap.push(`${ param } : ${ this.data[i][param] }`);
-    //     }
-    //   })
-    // }
   }
 
 }
