@@ -11,9 +11,8 @@ import base64
 import json
 #Esta libreria se instala desde https://github.com/mikexstudios/python-firebase
 from firebase import Firebase
-
-
-standby = 30
+# tiempo en segundos a dormir
+standby = 1800
 
 # Se envian los datos a firebase en data realtime con la ruta del dispositivo
 # y el valor de los parametros en string
