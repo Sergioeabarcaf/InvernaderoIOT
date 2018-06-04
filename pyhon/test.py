@@ -12,7 +12,7 @@ import json
 #Esta libreria se instala desde https://github.com/mikexstudios/python-firebase
 from firebase import Firebase
 # tiempo en segundos a dormir
-standby = 18
+standby = 1800
 # Almacenador de dispositivos
 dispositivos = {}
 urlDispositivos = "https://libelium-91af3.firebaseio.com/dispositivos"
