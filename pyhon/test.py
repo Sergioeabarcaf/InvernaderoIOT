@@ -12,29 +12,30 @@ import json
 #Esta libreria se instala desde https://github.com/mikexstudios/python-firebase
 from firebase import Firebase
 # tiempo en segundos a dormir
-standby = 1800
+standby = 18
 # Almacenador de dispositivos
-dispositivos = []
+dispositivos = {}
 
 # Validadores
 
 # Validador de que el dato de DRM no ha cambiado.
 def comprobarDato(dispositivo, timestamp):
-    for disp in dispositivos:
-        if(dispositivo == disp['dispositivo']):
-            if(timestamp == disp['timestamp']):
+    if len(dispositivos) == 0:
+        dispositivos[dispositivo] = timestamp
+        print "no existen dispositivos almacenados"
+        return True
+    keys = dispositivos.keys()
+    for disp in keys:
+        if(dispositivo == disp):
+            if(timestamp == dispositivos[disp]):
                 print "el dato ya esta almacenado"
-                print dispositivos
                 return False
             else:
                 print "el dispositivo esta pero este dato es nuevo"
-                print disp['timestamp'] + " != " + timestamp
-                disp['timestamp'] = timestamp
+                dispositivo[disp] = timestamp
                 return True
     print "el dispositivo no esta registrado, pero se almacena"
-    print "antes: " + dispositivos
-    disp.append({"dispositivo":dispositivo, "timestamp":timestamp})
-    print "despues: " + dispositivos
+    dispositivos[dispositivo] = timestamp
     return True
 
 # Se envian los datos a firebase en data realtime con la ruta del dispositivo
@@ -90,5 +91,6 @@ while True:
         data = base64.b64decode(test['list'][i]['value'])
         timestamp = test['list'][i]['timestamp']
         obtenerData(timestamp,data)
-    print "Termine! ya envie los datos, ahora me ire a dormir por " + str(standby / 60) + " minutos "
+        print "se envio el " + str(i) + " de : " + str(maxI - 1)
+    print "Termine! ahora me ire a dormir por " + str(standby / 60) + " minutos "
     time.sleep(standby)
