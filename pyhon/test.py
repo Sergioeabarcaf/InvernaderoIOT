@@ -13,16 +13,39 @@ import json
 from firebase import Firebase
 # tiempo en segundos a dormir
 standby = 1800
+# Almacenador de dispositivos
+dispositivos = []
+
+# Validadores
+
+# Validador de que el dato de DRM no ha cambiado.
+def comprobarDato(dispositivo, timestamp):
+    for disp in dispositivos:
+        if(dispositivo == disp['dispositivo']):
+            if(timestamp == disp['timestamp']):
+                print "el dato ya esta almacenado"
+                print dispositivos
+                return False
+            else:
+                print "el dispositivo esta pero este dato es nuevo"
+                print disp['timestamp'] + " != " + timestamp
+                disp['timestamp'] = timestamp
+                return True
+    print "el dispositivo no esta registrado, pero se almacena"
+    print "antes: " + dispositivos
+    disp.append({"dispositivo":dispositivo, "timestamp":timestamp})
+    print "despues: " + dispositivos
+    return True
 
 # Se envian los datos a firebase en data realtime con la ruta del dispositivo
 # y el valor de los parametros en string
 def enviarFirestore(timestamp,dispositivo,data):
     dataSend = {}
     dataValues = {}
-    dataSend["timestamp"] = timestamp
     for x in range (0, len(data)):
         parametro = data[x].split(":")
         dataValues[str(parametro[0])] = parametro[1]
+    dataSend["timestamp"] = timestamp
     dataSend["values"] = dataValues
     dataSend["device"] = dispositivo
     url = "https://libelium-91af3.firebaseio.com/estacionMetereologica"
@@ -40,8 +63,11 @@ def eliminarVacios(data):
 def obtenerData(timestamp,data):
     dataLimpia = data.split("#")
     dispositivo = dataLimpia[2]
-    dataLimpia = eliminarVacios(dataLimpia)
-    enviarFirestore(timestamp,dispositivo,dataLimpia)
+    if( comprobarDato(dispositivo,timestamp) ):
+        dataLimpia = eliminarVacios(dataLimpia)
+        enviarFirestore(timestamp,dispositivo,dataLimpia)
+    else:
+        print "El dispositivo: " + str(dispositivo) + " con el timestamp: " + timestamp + " ya ha sido registrado."
 
 while True:
     #obtener datos desde DiGi remote Manager
@@ -64,5 +90,5 @@ while True:
         data = base64.b64decode(test['list'][i]['value'])
         timestamp = test['list'][i]['timestamp']
         obtenerData(timestamp,data)
-    print "Termine! ya envie los datos, ahora me ire a dormir por " + str(standby) + " minutos "
+    print "Termine! ya envie los datos, ahora me ire a dormir por " + str(standby / 60) + " minutos "
     time.sleep(standby)
