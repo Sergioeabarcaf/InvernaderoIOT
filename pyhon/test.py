@@ -15,6 +15,7 @@ from firebase import Firebase
 standby = 18
 # Almacenador de dispositivos
 dispositivos = {}
+urlDispositivos = "https://libelium-91af3.firebaseio.com/dispositivos"
 
 # Validadores
 
@@ -22,7 +23,10 @@ dispositivos = {}
 def comprobarDato(dispositivo, timestamp):
     if len(dispositivos) == 0:
         dispositivos[dispositivo] = timestamp
-        print "no existen dispositivos almacenados"
+        print "no existen dispositivos almacenados, pero se agrega"
+        f = Firebase(urlDispositivos)
+        r = f.put(dispositivos)
+        print r
         return True
     keys = dispositivos.keys()
     for disp in keys:
@@ -32,10 +36,16 @@ def comprobarDato(dispositivo, timestamp):
                 return False
             else:
                 print "el dispositivo esta pero este dato es nuevo"
-                dispositivo[disp] = timestamp
+                dispositivos[disp] = timestamp
+                f = Firebase(urlDispositivos)
+                r = f.put(dispositivos)
+                print r
                 return True
     print "el dispositivo no esta registrado, pero se almacena"
     dispositivos[dispositivo] = timestamp
+    f = Firebase(urlDispositivos)
+    r = f.put(dispositivos)
+    print r
     return True
 
 # Se envian los datos a firebase en data realtime con la ruta del dispositivo
@@ -85,6 +95,17 @@ while True:
 
     #Contar la cantidad de dispositivos que existen en el registro
     maxI = int(test['count'])
+
+    #actualizar data de dispositivos
+
+    f = Firebase(urlDispositivos)
+    dispositivos = f.get()
+    if dispositivos == None:
+        print "es nulo y ahora lo vacie :)"
+        dispositivos = {}
+    else:
+        print "tiene datos"
+        print dispositivos
 
     #por cada dispositivo extraer el valor y enviar a funcion obtenerData
     for i in range(1, maxI):
