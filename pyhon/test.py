@@ -73,12 +73,16 @@ def eliminarVacios(data):
 # Limpiar la data sacando el id del dispositivo y los parametros para enviarlos a firestore
 def obtenerData(timestamp,data):
     dataLimpia = data.split("#")
-    dispositivo = dataLimpia[2]
-    if( comprobarDato(dispositivo,timestamp) ):
-        dataLimpia = eliminarVacios(dataLimpia)
-        enviarFirestore(timestamp,dispositivo,dataLimpia)
+    if ( len(dataLimpia) > 4):
+        dispositivo = dataLimpia[2]
+        if( comprobarDato(dispositivo,timestamp) ):
+            dataLimpia = eliminarVacios(dataLimpia)
+            enviarFirestore(timestamp,dispositivo,dataLimpia)
+        else:
+            print "El dispositivo: " + str(dispositivo) + " con el timestamp: " + timestamp + " ya ha sido registrado."
     else:
-        print "El dispositivo: " + str(dispositivo) + " con el timestamp: " + timestamp + " ya ha sido registrado."
+        print "esta data no es reconocible aun"
+        print data
 
 while True:
     #obtener datos desde DiGi remote Manager
@@ -101,11 +105,7 @@ while True:
     f = Firebase(urlDispositivos)
     dispositivos = f.get()
     if dispositivos == None:
-        print "es nulo y ahora lo vacie :)"
         dispositivos = {}
-    else:
-        print "tiene datos"
-        print dispositivos
 
     #por cada dispositivo extraer el valor y enviar a funcion obtenerData
     for i in range(1, maxI):
