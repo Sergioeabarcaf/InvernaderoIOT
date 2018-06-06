@@ -12,6 +12,10 @@ export class FirebaseService {
   data:any[] = [];
   dispositivos:string[] = [];
 
+  dataGrafica:number[] = [];
+  timeGrafica:string[] = [];
+  grafica:any = {};
+
   urlEM:string = "https://libelium-91af3.firebaseio.com/";
 
   constructor(private http:HttpClient) {
@@ -47,11 +51,39 @@ export class FirebaseService {
   }
 
   getParamsDispositivo(dispositivo:string){
+    // Buscar en el arreglo data el dispositivo, cuando aparece, se obtiene sus values y termina
     for( let dat of this.data){
       if( dispositivo == dat.device){
         return dat.values
       }
     }
+  }
+
+  getDataGrafica(dispositivo:string, parametro:string){
+    // Se limpian las variables
+    this.grafica = {};
+    this.dataGrafica = [];
+    this.timeGrafica = [];
+
+    // Se recorre la data para encontrar el dispositivo y parametro coincidan con el solicitado
+    for( let data of this.data ){
+      if( dispositivo == data.device){
+        let x:number = 0;
+        for( let param of data.values){
+          // Si se encuentran, se agregan a los arreglos de tiempo y data
+          if( parametro == data.values[x][0]){
+            this.dataGrafica.push(data.values[x][1])
+            this.timeGrafica.push(data.timestamp);
+          }
+          x++;
+        }
+      }
+    }
+    // Una vez recorrido todo, se agrega al objeto los parametros encontrados.
+    this.grafica['data'] = this.dataGrafica;
+    this.grafica['time'] = this.timeGrafica;
+    this.grafica['dispositivo'] = dispositivo;
+    return this.grafica;
   }
 
 }

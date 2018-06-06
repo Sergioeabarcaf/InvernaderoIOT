@@ -11,6 +11,7 @@ export class HomeComponent {
   dispositivo:string = "";
   parametros:any;
   parametro:string = "";
+  data:any;
 
   constructor(private _firebaseService:FirebaseService) {
 
@@ -23,7 +24,8 @@ export class HomeComponent {
 
   setParametro(param:string){
     this.parametro = param;
-    console.log(this.parametro);
+    this.data = this._firebaseService.getDataGrafica(this.dispositivo, this.parametro);
+    console.log(this.data);
   }
 
 }
