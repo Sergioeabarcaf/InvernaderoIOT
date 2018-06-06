@@ -1,46 +1,19 @@
 <div class="container">
-  <div class="jumbotron">
-    <h1>Datos obtenidos desde Digi Remote Manager</h1>
-    <p class="lead"> Se muestran los datos de Temperatura, Humedad y presión</p>
-  </div>
-</div>
-<br>
-<hr>
-<br>
-<div class="container">
-  <div class="row" *ngFor="let objeto of data">
-    <div class="col-4">
-      <h3>Device: {{ objeto.device}}</h3>
-      <p>Fecha: {{ objeto.timestamp | date:'dd-MMM-yyyy' }}</p>
-      <p>Hora: {{ objeto.timestamp | date:'HH:mm:ss'}}</p>
+  <div class="row">
+    <div class="col-12 col-md-6">
+      <h1>Selecciona el dispositivo</h1>
+      <app-dispositivos (dispositivoSeleccionado)="setDispositivo( $event )"></app-dispositivos>
     </div>
-    <div class="col-2" *ngFor="let params of objeto.values">
-      <h4>{{ params[0] }} : {{ params[1] }}</h4>
-      <hr>
+    <div class="col-12 col-md-6">
+      <h1>Selecciona el parametro del dispositivo</h1>
+      <app-parametros></app-parametros>
     </div>
   </div>
-  <!-- <div class="row text-center" *ngFor="let objeto of data">
-    <div class="col-12 col-md-4">
-      <h2>Temperatura</h2>
-      <br>
-      <i class="fas fa-thermometer-half fa-7x"></i>
-      <p> 35° Celsius </p>
-      <br>
+  <div class="row text-center">
+    <div class="col-12">
+      <h1>Grafico</h1>
+
     </div>
-    <div class="col-12 col-md-4">
-      <h2>Humedad</h2>
-      <br>
-      <i class="fas fa-tint fa-7x"></i>
-      <p> 50% </p>
-      <br>
-    </div>
-    <div class="col-12 col-md-4">
-      <h2>Presión</h2>
-      <br>
-      <i class="fas fa-tachometer-alt fa-7x"></i>
-      <p> 950 UM</p>
-      <br>
-    </div>
-  </div> -->
+  </div>
 
 </div>
