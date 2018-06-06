@@ -46,4 +46,12 @@ export class FirebaseService {
     })
   }
 
+  getParamsDispositivo(dispositivo:string){
+    for( let dat of this.data){
+      if( dispositivo == dat.device){
+        return dat.values
+      }
+    }
+  }
+
 }

@@ -9,6 +9,7 @@ import { FirebaseService } from '../../service/firebase.service';
 export class HomeComponent {
 
   dispositivo:string = "";
+  parametros:any;
   parametro:string = "";
 
   constructor(private _firebaseService:FirebaseService) {
@@ -17,7 +18,12 @@ export class HomeComponent {
 
   setDispositivo(dispositivo:string){
     this.dispositivo = dispositivo;
-    console.log(this.dispositivo);
+    this.parametros = this._firebaseService.getParamsDispositivo(this.dispositivo);
+  }
+
+  setParametro(param:string){
+    this.parametro = param;
+    console.log(this.parametro);
   }
 
 }

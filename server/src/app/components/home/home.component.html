@@ -4,9 +4,9 @@
       <h1>Selecciona el dispositivo</h1>
       <app-dispositivos (dispositivoSeleccionado)="setDispositivo( $event )"></app-dispositivos>
     </div>
-    <div class="col-12 col-md-6">
+    <div class="col-12 col-md-6" *ngIf="dispositivo">
       <h1>Selecciona el parametro del dispositivo</h1>
-      <app-parametros></app-parametros>
+      <app-parametros [params]="parametros" (parametroSeleccionado)="setParametro( $event )"></app-parametros>
     </div>
   </div>
   <div class="row text-center">

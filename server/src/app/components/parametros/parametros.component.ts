@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-parametros',
@@ -7,9 +7,17 @@ import { Component, Input } from '@angular/core';
 })
 export class ParametrosComponent {
 
-  @Input() dispositivo:string;
+  @Input() params:any = {};
 
-  constructor() { }
+  @Output() parametroSeleccionado: EventEmitter<string>;
+
+  constructor() {
+    this.parametroSeleccionado = new EventEmitter();
+  }
+
+  seleccionParametro(param){
+    this.parametroSeleccionado.emit(param);
+  }
 
 
 }
