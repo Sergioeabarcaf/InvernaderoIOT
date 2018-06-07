@@ -10,7 +10,7 @@ export class DispositivosComponent {
 
   @Output() dispositivoSeleccionado: EventEmitter<string>;
 
-  constructor(private _firebaseService:FirebaseService) {
+  constructor(public _firebaseService:FirebaseService) {
     this.dispositivoSeleccionado = new EventEmitter();
   }
 
