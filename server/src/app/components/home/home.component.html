@@ -9,12 +9,40 @@
       <app-parametros [params]="parametros" (parametroSeleccionado)="setParametro( $event )"></app-parametros>
     </div>
   </div>
-  <div class="row text-center" *ngIf="data">
+  <hr>
+  <div class="row text-center" *ngIf="parametro">
     <div class="col-12">
-      <h1>Grafico</h1>
-
+      <h1>Grafico {{ parametro }} / {{ dispositivo }}</h1>
+      <button (click)="mostrarGrafica(5)">Ver grafico (5)</button>
+      <button (click)="mostrarGrafica(10)">Ver grafico (10)</button>
+      <button (click)="mostrarGrafica(20)">Ver grafico (20)</button>
+      <button (click)="mostrarGrafica(30)">Ver grafico (30)</button>
+      <button (click)="mostrarGrafica(50)">Ver grafico (50)</button>
     </div>
   </div>
-  
-
+  <div class="row" *ngIf="data">
+    <div class="col-md-6">
+      <div style="display: block;">
+      <canvas baseChart width="400" height="400"
+                  [datasets]="lineChartData"
+                  [labels]="lineChartLabels"
+                  [options]="lineChartOptions"
+                  [colors]="lineChartColors"
+                  [legend]="lineChartLegend"
+                  [chartType]="lineChartType"
+                  (chartHover)="chartHovered($event)"
+                  (chartClick)="chartClicked($event)"></canvas>
+      </div>
+    </div>
+    <div class="col-md-6" style="margin-bottom: 10px">
+      <table class="table table-responsive table-condensed">
+        <tr>
+          <th *ngFor="let label of lineChartLabels">{{label}}</th>
+        </tr>
+        <tr *ngFor="let d of lineChartData">
+          <td *ngFor="let label of lineChartLabels; let j=index">{{d && d.data[j]}}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
 </div>

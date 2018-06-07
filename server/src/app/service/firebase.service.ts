@@ -59,12 +59,12 @@ export class FirebaseService {
     }
   }
 
-  getDataGrafica(dispositivo:string, parametro:string){
+  getDataGrafica(dispositivo:string, parametro:string, limit:number){
     // Se limpian las variables
     this.grafica = {};
     this.dataGrafica = [];
     this.timeGrafica = [];
-
+    let i:number = 0;
     // Se recorre la data para encontrar el dispositivo y parametro coincidan con el solicitado
     for( let data of this.data ){
       if( dispositivo == data.device){
@@ -77,6 +77,13 @@ export class FirebaseService {
           }
           x++;
         }
+      }
+      i++;
+      if(i > limit){
+        this.grafica['data'] = this.dataGrafica;
+        this.grafica['time'] = this.timeGrafica;
+        this.grafica['dispositivo'] = dispositivo;
+        return this.grafica;
       }
     }
     // Una vez recorrido todo, se agrega al objeto los parametros encontrados.
