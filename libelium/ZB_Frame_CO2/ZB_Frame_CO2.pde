@@ -11,7 +11,7 @@
 char RX_ADDRESS[] = "0013A20040DC588F";
 
 //ID que usara
-char WASPMOTE_ID[] = "Waspmote";
+char WASPMOTE_ID[] = "WaspCO2";
 
 //Variables a usar
 uint8_t error;
