@@ -2,6 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 
+import { ChartsModule } from 'ng2-charts';
+
 import { APP_ROUTING } from './app.routes';
 
 import { FirebaseService } from './service/firebase.service';
@@ -22,7 +24,8 @@ import { ParametrosComponent } from './components/parametros/parametros.componen
   imports: [
     APP_ROUTING,
     BrowserModule,
-    HttpClientModule
+    HttpClientModule,
+    ChartsModule
   ],
   providers: [FirebaseService],
   bootstrap: [AppComponent]
