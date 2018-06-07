@@ -27,8 +27,9 @@ export class FirebaseService {
       }
     });
 
-    let urlData = `${ this.urlEM }estacionMetereologica.json?orderBy"timestamp"`;
+    let urlData = `${ this.urlEM }estacionMetereologica.json?orderBy="$key"&limitToLast=50`;
     this.http.get( urlData ).subscribe( res => {
+      console.log(res)
       this.dataFiresbase = res;
       // Recorrer el JSON que en cada llave contiene un conjunto de datos
       let x:number = 0
@@ -72,8 +73,8 @@ export class FirebaseService {
         for( let param of data.values){
           // Si se encuentran, se agregan a los arreglos de tiempo y data
           if( parametro == data.values[x][0]){
-            this.dataGrafica.push(data.values[x][1])
-            this.timeGrafica.push(data.timestamp);
+            this.dataGrafica.unshift(data.values[x][1])
+            this.timeGrafica.unshift(data.timestamp);
           }
           x++;
         }

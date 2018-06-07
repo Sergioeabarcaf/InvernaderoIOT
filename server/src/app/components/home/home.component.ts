@@ -49,10 +49,6 @@ export class HomeComponent {
   public lineChartLegend:boolean = true;
   public lineChartType:string = 'line';
 
-  public randomize():void {
-    console.log(this.data);
-  }
-
   // events
   public chartClicked(e:any):void {
     console.log(e);
