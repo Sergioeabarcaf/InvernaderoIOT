@@ -9,59 +9,14 @@ import time
 import httplib
 import base64
 import json
+import goToFirebase
 #Esta libreria se instala desde https://github.com/mikexstudios/python-firebase
-from firebase import Firebase
+# from firebase import Firebase
 # tiempo en segundos a dormir
 standby = 1800
 # Almacenador de dispositivos
 dispositivos = {}
-urlDispositivos = "https://libelium-91af3.firebaseio.com/dispositivos"
-
-# Validadores
-
-# Validador de que el dato de DRM no ha cambiado.
-def comprobarDato(dispositivo, timestamp):
-    if len(dispositivos) == 0:
-        dispositivos[dispositivo] = timestamp
-        print "no existen dispositivos almacenados, pero se agrega"
-        f = Firebase(urlDispositivos)
-        r = f.put(dispositivos)
-        print r
-        return True
-    keys = dispositivos.keys()
-    for disp in keys:
-        if(dispositivo == disp):
-            if(timestamp == dispositivos[disp]):
-                print "el dato ya esta almacenado"
-                return False
-            else:
-                print "el dispositivo esta pero este dato es nuevo"
-                dispositivos[disp] = timestamp
-                f = Firebase(urlDispositivos)
-                r = f.put(dispositivos)
-                print r
-                return True
-    print "el dispositivo no esta registrado, pero se almacena"
-    dispositivos[dispositivo] = timestamp
-    f = Firebase(urlDispositivos)
-    r = f.put(dispositivos)
-    print r
-    return True
-
-# Se envian los datos a firebase en data realtime con la ruta del dispositivo
-# y el valor de los parametros en string
-def enviarFirestore(timestamp,dispositivo,data):
-    dataSend = {}
-    dataValues = {}
-    for x in range (0, len(data)):
-        parametro = data[x].split(":")
-        dataValues[str(parametro[0])] = parametro[1]
-    dataSend["timestamp"] = timestamp
-    dataSend["values"] = dataValues
-    dataSend["device"] = dispositivo
-    url = "https://libelium-91af3.firebaseio.com/estacionMetereologica"
-    f = Firebase(url)
-    r = f.push(dataSend)
+# urlDispositivos = "https://libelium-91af3.firebaseio.com/dispositivos"
 
 def eliminarVacios(data):
     dataSinVacios = []
@@ -75,11 +30,14 @@ def obtenerData(timestamp,data):
     dataLimpia = data.split("#")
     if ( len(dataLimpia) > 4):
         dispositivo = dataLimpia[2]
-        if( comprobarDato(dispositivo,timestamp) ):
-            dataLimpia = eliminarVacios(dataLimpia)
-            enviarFirestore(timestamp,dispositivo,dataLimpia)
-        else:
-            print "El dispositivo: " + str(dispositivo) + " con el timestamp: " + timestamp + " ya ha sido registrado."
+        dataLimpia = eliminarVacios(dataLimpia)
+        goToFirebase.send(timestamp,dispositivo,dataLimpia)
+        goToFirebase.updateLast(str(timestamp), dataLimpia)
+        # if( comprobarDato(dispositivo,timestamp) ):
+        #     dataLimpia = eliminarVacios(dataLimpia)
+        #     enviarFirestore(timestamp,dispositivo,dataLimpia)
+        # else:
+        #     print "El dispositivo: " + str(dispositivo) + " con el timestamp: " + timestamp + " ya ha sido registrado."
     else:
         print "esta data no es reconocible aun"
         print data
@@ -101,11 +59,11 @@ while True:
     maxI = int(test['count'])
 
     #actualizar data de dispositivos
-
-    f = Firebase(urlDispositivos)
-    dispositivos = f.get()
-    if dispositivos == None:
-        dispositivos = {}
+    #
+    # f = Firebase(urlDispositivos)
+    # dispositivos = f.get()
+    # if dispositivos == None:
+    #     dispositivos = {}
 
     #por cada dispositivo extraer el valor y enviar a funcion obtenerData
     for i in range(1, maxI):
