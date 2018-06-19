@@ -20,15 +20,18 @@ def obtenerData(dataTime,dataValues):
         data = clean(data)
         return device, data
     else:
-        print "esta data no es reconocible aun"
         return False, False
 
 #obtener datos desde DiGi remote Manager de un dispositivo especifico
 def getDataDevice(id,cantidad):
+    link = "/ws/v1/streams/history/00000000-00000000-00409DFF-FF6496C2/xbee.serialIn/["+ id + "]!?size=" + str(cantidad) + "&order=desc"
     auth = base64.encodestring("%s:%s"%(username,password))[:-1]
     webservice = httplib.HTTPSConnection("remotemanager.digi.com")
-    webservice.putrequest("GET", "/ws/v1/streams/inventory") # BUG: Cambiar la direccion para obtener un solo dispositivo
+    webservice.putrequest("GET", link)
     webservice.putheader("Authorization", "Basic %s"%auth)
     webservice.endheaders()
     response = webservice.getresponse()
-    return response.read()
+    if (response.status == 200):
+        return response.read()
+    else:
+        return response.status
