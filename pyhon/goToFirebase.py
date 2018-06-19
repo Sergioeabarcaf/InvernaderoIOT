@@ -33,3 +33,16 @@ def updateLast(timestamp,data):
         send = {}
     print param
     ref.update(param)
+
+def checkData(time,data):
+    param = data.split(":")
+    urlCheck = "last/" + param[0]
+    ref = db.reference(urlCheck)
+    r = ref.get()
+    if (r == None):
+        return True
+    else:
+        if r["time"] == time:
+            return False
+        else:
+            return True
