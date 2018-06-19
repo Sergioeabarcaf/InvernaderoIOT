@@ -7,10 +7,11 @@ default_app = firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://libelium-91af3.firebaseio.com/'
 })
 
+# Almacenar data en registro historico
 def send(timestamp,dispositivo,data):
     dataSend = {}
     dataValues = {}
-    urlDevice = 'devices/' + dispositivo
+    urlDevice = 'dataDevices/' + dispositivo
     ref = db.reference(urlDevice)
     for x in range (0, len(data)):
         parametro = data[x].split(":")
@@ -19,6 +20,7 @@ def send(timestamp,dispositivo,data):
     dataSend["values"] = dataValues
     ref.push(dataSend)
 
+# Actualizar ultimos valores obtenidos
 def updateLast(timestamp,data):
     param = {}
     send = {}

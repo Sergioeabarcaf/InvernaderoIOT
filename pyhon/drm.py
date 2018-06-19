@@ -14,9 +14,9 @@ def clean(data):
 
 # Limpiar la data sacando el id del dispositivo y los parametros para enviarlos a firestore
 def obtenerData(dataTime,dataValues):
-    data = data.split("#")
+    data = dataValues.split("#")
     if ( len(data) > 4):
-        device = str(dataLimpia[2])
+        device = str(data[2])
         data = clean(data)
         return device, data
     else:
