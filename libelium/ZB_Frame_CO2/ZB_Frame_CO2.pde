@@ -1,6 +1,6 @@
 /*
  * Obtener Temperatura, Humedad y Presión
- * Programa desarrollado en PROTEINLAB por Sergio Abarca F 
+ * Programa desarrollado en PROTEINLAB por Sergio Abarca F
  */
 
 #include <WaspSensorGas_v30.h>
@@ -60,7 +60,7 @@ void loop()
   frame.showFrame();
 
   //Enviar Frame
-  error = xbeeZB.send( RX_ADDRESS, frame.buffer, frame.length );  
+  error = xbeeZB.send( RX_ADDRESS, frame.buffer, frame.length );
 
   // Comprobar que el envio sea correcto
   if ( error == 0 )
@@ -82,8 +82,8 @@ void loop()
     Utils.blinkRedLED();
   }
 
-  // Espera de 120 segundos para un nuevo envio de Frame
-  delay(120000);
+  // Espera de 1800000 segundos (30 minutos) para un nuevo envio de Frame
+  delay(1800000);
 }
 
 // Revisar parametros de conexion
@@ -98,5 +98,3 @@ void checkNetworkParams()
   }
   USB.println(F("\nConectado en la red"));
 }
-
-
