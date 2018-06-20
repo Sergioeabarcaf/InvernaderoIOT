@@ -20,3 +20,12 @@ En esta versión se logra lo siguiente:
 * goToFirebase send: Envia la data a Firebase en el formato {dispositivo: {key: {timestamp, values} }}
 * goToFirebase updateLast: actualiza la ultima data en el formato {parametro: {timestamp, value}}
 * goToFirebase checkData: verifica que el dato a enviar no sea igual que el ultimo dato almacenado.
+
+### libelium
+
+### V0.2.2
+En esta versión se logra lo siguiente:
+* Creación de diversos programas para waspmote donde se envian datos por Frame, Texto en ZB, obtencion de Temperatura, Humedad, Presion y CO2
+* Creación de programa para enviar CO2 de waspmote con Sensor Board via ZB (ZB_Frame_CO2)
+* Creación de programa para enviar Temperatura, Humedad y Presión de waspmote con Agriculture Board via ZB (ZB_Frame_THP)
+* La data enviada es cada 30 minutos. 
