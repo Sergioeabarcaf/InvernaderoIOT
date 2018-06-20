@@ -21,11 +21,18 @@ En esta versión se logra lo siguiente:
 * goToFirebase updateLast: actualiza la ultima data en el formato {parametro: {timestamp, value}}
 * goToFirebase checkData: verifica que el dato a enviar no sea igual que el ultimo dato almacenado.
 
-### libelium
+## Libelium
 
 ### V0.2.2
 En esta versión se logra lo siguiente:
 * Creación de diversos programas para waspmote donde se envian datos por Frame, Texto en ZB, obtencion de Temperatura, Humedad, Presion y CO2
 * Creación de programa para enviar CO2 de waspmote con Sensor Board via ZB (ZB_Frame_CO2)
 * Creación de programa para enviar Temperatura, Humedad y Presión de waspmote con Agriculture Board via ZB (ZB_Frame_THP)
-* La data enviada es cada 30 minutos. 
+* La data enviada es cada 30 minutos.
+
+## Portal web
+
+### V0.2.3
+En esta versión se logra lo siguiente:
+* Visualización de la data obtenida desde Firebase.
+* Uso de ng2-charts para realizar graficas.
