@@ -36,3 +36,10 @@ En esta versión se logra lo siguiente:
 En esta versión se logra lo siguiente:
 * Visualización de la data obtenida desde Firebase.
 * Uso de ng2-charts para realizar graficas.
+
+## Arduino
+
+### V0.2.4
+En esta versión se logra lo siguiente:
+* Envio de datos via ZB
+* Envio de Temperatura y Humedad cada 30 minutos
