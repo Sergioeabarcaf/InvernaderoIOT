@@ -12,6 +12,7 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 import { DispositivosComponent } from './components/dispositivos/dispositivos.component';
 import { ParametrosComponent } from './components/parametros/parametros.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { ParametrosComponent } from './components/parametros/parametros.componen
     HomeComponent,
     AppComponent,
     DispositivosComponent,
-    ParametrosComponent
+    ParametrosComponent,
+    NavbarComponent
   ],
   imports: [
     APP_ROUTING,
