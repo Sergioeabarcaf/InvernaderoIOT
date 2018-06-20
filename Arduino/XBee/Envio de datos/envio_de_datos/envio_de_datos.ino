@@ -107,9 +107,7 @@ void loop()
     // ------------------------------------------ Limpieza mensaje
 
     strcpy(payload, "");
-    
+
     startMillis = actualMillis;
   }
 }
-
-
