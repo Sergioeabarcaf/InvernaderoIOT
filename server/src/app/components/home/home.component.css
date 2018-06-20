@@ -1,0 +1,13 @@
+.backProtein{
+  background-color: #e0674b;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+#lastData{
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+#lastData p{
+  margin-bottom: 0px;
+}
