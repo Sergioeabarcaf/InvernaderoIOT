@@ -30,9 +30,7 @@ void floatAchar(float num, char resultado[10])
 
 
 char aux[10];
-unsigned long startMillis;
-unsigned long actualMillis;
-const unsigned long periodo = 1800000;
+
 //30 min 1800000 ;
 
 void setup()
@@ -41,15 +39,12 @@ void setup()
   Serial.begin(9600);
   xbee.setSerial(Serial);
   dht.begin();
-  startMillis = millis();
 
 }
 
 void loop()
 {
-  actualMillis = millis(); // milisegundos desde que comenzo el programa
-  if (actualMillis - startMillis >= periodo)
-  {
+  
     //lectura de sensores ejemplo
     float humedad = dht.readHumidity();
     float temperatura = dht.readTemperature();
@@ -107,9 +102,7 @@ void loop()
     // ------------------------------------------ Limpieza mensaje
 
     strcpy(payload, "");
-    
-    startMillis = actualMillis;
-  }
-}
+    delay(1800000);    
+ }
 
 
