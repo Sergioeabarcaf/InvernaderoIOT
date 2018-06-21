@@ -1,13 +1,41 @@
-.backProtein{
-  background-color: #e0674b;
-  padding-top: 50px;
-  padding-bottom: 50px;
+.padding25{
+  padding: 25px;
+}
+
+.padding50{
+  padding: 50px;
+}
+
+.nota{
+  margin-bottom: 0px;
+  font-size: 12px;
 }
 
 #lastData{
   padding-top: 25px;
   padding-bottom: 25px;
+  background-color: #81B1C6;
+  color: white;
 }
-#lastData p{
-  margin-bottom: 0px;
+
+#lastData h2{
+  font-size: 2em !important;
+}
+
+#lastData .btn{
+  background-color: #E0684B;
+  color: white;
+}
+
+#proteinlab{
+  background-color: #C87B25;
+  color: white;
+}
+
+#waspTHP{
+  background-color:#81B1C6;
+}
+
+#waspCO2{
+  background-color: #87D4A6;
 }
