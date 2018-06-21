@@ -17,3 +17,12 @@ h3{
 p{
   font-family: 'Roboto', sans-serif !important;
 }
+
+.padding25{
+  padding: 25px;
+}
+
+.nota{
+  margin-bottom: 0px;
+  font-size: 12px;
+}
