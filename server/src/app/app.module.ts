@@ -14,6 +14,7 @@ import { DispositivosComponent } from './components/dispositivos/dispositivos.co
 import { ParametrosComponent } from './components/parametros/parametros.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { HistoryComponent } from './components/history/history.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { FooterComponent } from './components/footer/footer.component';
     DispositivosComponent,
     ParametrosComponent,
     NavbarComponent,
-    FooterComponent
+    FooterComponent,
+    HistoryComponent
   ],
   imports: [
     APP_ROUTING,
