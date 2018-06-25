@@ -11,8 +11,6 @@ import { FirebaseService } from './service/firebase.service';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
-import { DispositivosComponent } from './components/dispositivos/dispositivos.component';
-import { ParametrosComponent } from './components/parametros/parametros.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { HistoryComponent } from './components/history/history.component';
@@ -22,8 +20,6 @@ import { HistoryComponent } from './components/history/history.component';
   declarations: [
     HomeComponent,
     AppComponent,
-    DispositivosComponent,
-    ParametrosComponent,
     NavbarComponent,
     FooterComponent,
     HistoryComponent
