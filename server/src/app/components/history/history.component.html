@@ -1,18 +1,14 @@
-<section style="background-color:#FF9177;">
-  <div class="container">
-    <div class="row text-center text-white padding25" >
-      <div class="col-12">
-        <h1><strong> Red de sensores Libelium </strong></h1>
-      </div>
-    </div>
+<div class="row text-center text-white padding25 justify-content-center " style="background-color:#FF9177;">
+  <div class="col-8">
+    <h1><strong> Red de sensores Libelium </strong></h1>
   </div>
-</section>
+</div>
 
-<section id="seleccionParam">
-  <div class="container">
+<div class="row">
+  <div class="col-12 col-md-3" id="filtrar">
     <form (ngSubmit)="verGrafico(forma)" #forma="ngForm">
-      <div class="form-row">
-        <div class="form-group col-12 col-md-4">
+      <div class="form-row align-items-end">
+        <div class="form-group col-4 col-md-12">
           <label>Seleccione parametro</label>
           <select class="form-control" name="parametro" ngModel>
             <option>Temperatura</option>
@@ -21,52 +17,115 @@
             <option>CO2</option>
           </select>
         </div>
-        <div class="form-group col-12 col-md-4">
+        <div class="form-group col-4 col-md-12">
           <label>Consultar por:</label>
           <select class="form-control" name="tipo" ngModel>
             <option>Días</option>
             <option>Horas</option>
           </select>
         </div>
-        <div class="form-group col-12 col-md-4">
+        <div class="form-group col-4 col-md-12">
           <label>Ingrese cantidad de datos a visualizar: </label>
           <input class="form-control" type="number" name="cantidad" ngModel>
         </div>
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <div class="col-12 text-center">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
     </form>
   </div>
-</section>
-
-<section id="grafico">
-  <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <div style="display: block;">
-        <canvas baseChart width="200" height="200"
-                    [datasets]="lineChartData"
-                    [labels]="lineChartLabels"
-                    [options]="lineChartOptions"
-                    [colors]="lineChartColors"
-                    [legend]="lineChartLegend"
-                    [chartType]="lineChartType"
-                    (chartHover)="chartHovered($event)"
-                    (chartClick)="chartClicked($event)"></canvas>
+    <div class="col-12 col-md-9">
+      <div class="row justify-content-center">
+        <div class="col-12 text-center">
+          <h2>Parametro</h2>
+        </div>
+        <div class="col-12 col-md-3">
+          <h1>hola</h1>
+        </div>
+        <div class="col-12 col-md-9">
+          <div style="display: block;">
+            <canvas baseChart width="400" height="100"
+                      [datasets]="lineChartData"
+                      [labels]="lineChartLabels"
+                      [options]="lineChartOptions"
+                      [colors]="lineChartColors"
+                      [legend]="lineChartLegend"
+                      [chartType]="lineChartType"
+                      (chartHover)="chartHovered($event)"
+                      (chartClick)="chartClicked($event)"
+                      style="max-height:200px;">
+            </canvas>
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-12 text-center">
+          <h2>Parametro</h2>
+        </div>
+        <div class="col-12 col-md-3">
+          <h1>hola</h1>
+        </div>
+        <div class="col-12 col-md-9">
+          <div style="display: block;">
+            <canvas baseChart width="400" height="100"
+                      [datasets]="lineChartData"
+                      [labels]="lineChartLabels"
+                      [options]="lineChartOptions"
+                      [colors]="lineChartColors"
+                      [legend]="lineChartLegend"
+                      [chartType]="lineChartType"
+                      (chartHover)="chartHovered($event)"
+                      (chartClick)="chartClicked($event)"
+                      style="max-height:200px;">
+            </canvas>
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-12 text-center">
+          <h2>Parametro</h2>
+        </div>
+        <div class="col-12 col-md-3">
+          <h1>hola</h1>
+        </div>
+        <div class="col-12 col-md-9">
+          <div style="display: block;">
+            <canvas baseChart width="400" height="100"
+                      [datasets]="lineChartData"
+                      [labels]="lineChartLabels"
+                      [options]="lineChartOptions"
+                      [colors]="lineChartColors"
+                      [legend]="lineChartLegend"
+                      [chartType]="lineChartType"
+                      (chartHover)="chartHovered($event)"
+                      (chartClick)="chartClicked($event)"
+                      style="max-height:200px;">
+            </canvas>
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-12 text-center">
+          <h2>Parametro</h2>
+        </div>
+        <div class="col-12 col-md-3">
+          <h1>hola</h1>
+        </div>
+        <div class="col-12 col-md-9">
+          <div style="display: block;">
+            <canvas baseChart width="400" height="100"
+                      [datasets]="lineChartData"
+                      [labels]="lineChartLabels"
+                      [options]="lineChartOptions"
+                      [colors]="lineChartColors"
+                      [legend]="lineChartLegend"
+                      [chartType]="lineChartType"
+                      (chartHover)="chartHovered($event)"
+                      (chartClick)="chartClicked($event)"
+                      style="max-height:200px;">
+            </canvas>
+          </div>
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-12" style="margin-top: 30px">
-        <table class="table table-responsive table-condensed">
-          <tr>
-            <th *ngFor="let label of lineChartLabels">{{label}}</th>
-          </tr>
-          <tr *ngFor="let d of lineChartData">
-            <td *ngFor="let label of lineChartLabels; let j=index">{{d && d.data[j]}}</td>
-          </tr>
-        </table>
-        <button (click)="randomize()">CLICK</button>
-      </div>
-    </div>
-  </div>
-</section>
+</div>
