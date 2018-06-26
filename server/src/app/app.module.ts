@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { ChartsModule } from 'ng2-charts';
+import { GaugeModule } from 'angular-gauge';
 
 import { APP_ROUTING } from './app.routes';
 
@@ -29,7 +30,8 @@ import { HistoryComponent } from './components/history/history.component';
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    ChartsModule
+    ChartsModule,
+    GaugeModule.forRoot()
   ],
   providers: [FirebaseService],
   bootstrap: [AppComponent]
