@@ -16,6 +16,8 @@ import { HomeComponent } from './components/home/home.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { HistoryComponent } from './components/history/history.component';
+import { FilterComponent } from './components/filter/filter.component';
+import { Last24Component } from './components/last24/last24.component';
 
 
 @NgModule({
@@ -24,7 +26,9 @@ import { HistoryComponent } from './components/history/history.component';
     AppComponent,
     NavbarComponent,
     FooterComponent,
-    HistoryComponent
+    HistoryComponent,
+    FilterComponent,
+    Last24Component
   ],
   imports: [
     APP_ROUTING,
