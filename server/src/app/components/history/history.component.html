@@ -6,66 +6,12 @@
 
 <div class="row">
   <div class="col-12 col-md-3" id="filtrar">
-    <form (ngSubmit)="verGrafico(forma)" #forma="ngForm">
-      <div class="form-row align-items-end">
-        <div class="form-group col-4 col-md-12">
-          <label>Seleccione parametro</label>
-          <select class="form-control" name="parametro" ngModel>
-            <option>Temperatura</option>
-            <option>Humedad</option>
-            <option>Presión</option>
-            <option>CO2</option>
-          </select>
-        </div>
-        <div class="form-group col-4 col-md-12">
-          <label>Consultar por:</label>
-          <select class="form-control" name="tipo" ngModel>
-            <option>Días</option>
-            <option>Horas</option>
-          </select>
-        </div>
-        <div class="form-group col-4 col-md-12">
-          <label>Ingrese cantidad de datos a visualizar: </label>
-          <input class="form-control" type="number" name="cantidad" ngModel>
-        </div>
-      </div>
-      <div class="col-12 text-center">
-        <button type="submit" class="btn btn-primary">Filtrar</button>
-      </div>
-    </form>
+    <app-filter></app-filter>
   </div>
     <div class="col-12 col-md-9">
-      <div class="row justify-content-center">
-        <div class="col-12 text-center">
-          <h2>Parametro</h2>
-        </div>
-        <div class="col-12 col-md-3">
-          <mwl-gauge
-            [min]=-50
-            [max]=100
-            [dialStartAngle]=180
-            [dialEndAngle]=0
-            [value]=10
-            [animated]=true
-            [animationDuration]=1>
-          </mwl-gauge>
-        </div>
-        <div class="col-12 col-md-9">
-          <div style="display: block;">
-            <canvas baseChart width="350" height="100"
-                      [datasets]="lineChartData"
-                      [labels]="lineChartLabels"
-                      [options]="lineChartOptions"
-                      [colors]="lineChartColors"
-                      [legend]="lineChartLegend"
-                      [chartType]="lineChartType"
-                      (chartHover)="chartHovered($event)"
-                      (chartClick)="chartClicked($event)"
-                      style="max-height:200px;">
-            </canvas>
-          </div>
-        </div>
-      </div>
-
+      <app-last24 [parametro]="paramTemp" [gaugeValue]="_firebaseService.dataLast.TC.value" [lineChartData]="_firebaseService.temp24" [lineChartLabels]="_firebaseService.labelTHP24" [gaugeMin]="gaugeMinTemp" [gaugeMax]="gaugeMaxTemp"></app-last24>
+      <app-last24 [parametro]="paramHum" [gaugeValue]="_firebaseService.dataLast.HUM.value" [lineChartData]="_firebaseService.hum24" [lineChartLabels]="_firebaseService.labelTHP24" [gaugeMin]="gaugeMinHum" [gaugeMax]="gaugeMaxHum"></app-last24>
+      <app-last24 [parametro]="paramPres" [gaugeValue]="_firebaseService.dataLast.PRES.value" [lineChartData]="_firebaseService.pres24" [lineChartLabels]="_firebaseService.labelTHP24" [gaugeMin]="gaugeMinPres" [gaugeMax]="gaugeMaxPres"></app-last24>
+      <app-last24 [parametro]="paramCO2" [gaugeValue]="_firebaseService.dataLast.CO2.value" [lineChartData]="_firebaseService.co224" [lineChartLabels]="_firebaseService.labelCO224" [gaugeMin]="gaugeMinCo2" [gaugeMax]="gaugeMaxCo2"></app-last24>
     </div>
 </div>
