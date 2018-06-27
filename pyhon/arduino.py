@@ -3,10 +3,9 @@ import drm
 import json
 import base64
 
+#id de arduino xbee
 id = "00:13:A2:00:41:5B:67:F6"
 cantidad = 1
-
-
 # Obtener el ultimo dato desde Digi Remote y convertirla en un JSON
 data = json.loads(drm.getDataDevice(id,cantidad))
 dataValue = base64.b64decode(data['list'][0]['value'])
