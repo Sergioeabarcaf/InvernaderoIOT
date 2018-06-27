@@ -1,3 +1,31 @@
-<p>
-  last24 works!
-</p>
+<div class="row justify-content-center">
+  <div class="col-12 text-center">
+    <h2> {{ parametro }}</h2>
+  </div>
+  <div class="col-12 col-md-3">
+    <mwl-gauge
+      [min]= gaugeMin
+      [max]= gaugeMax
+      [dialStartAngle]=180
+      [dialEndAngle]=0
+      [value]= gaugeValue
+      [animated]=true
+      [animationDuration]=1>
+    </mwl-gauge>
+  </div>
+  <div class="col-12 col-md-9">
+    <div style="display: block;">
+      <canvas baseChart width="350" height="100"
+                [datasets]= lineChartData
+                [labels]= lineChartLabels
+                [options]="{responsive: true}"
+                [colors]="lineChartColors"
+                [legend]= false
+                [chartType]="lineChartType"
+                (chartHover)="chartHovered($event)"
+                (chartClick)="chartClicked($event)"
+                style="max-height:200px;">
+      </canvas>
+    </div>
+  </div>
+</div>
