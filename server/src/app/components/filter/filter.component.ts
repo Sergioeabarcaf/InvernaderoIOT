@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.css']
 })
-export class FilterComponent implements OnInit {
+export class FilterComponent {
 
   constructor() { }
 
-  ngOnInit() {
+  verGrafico(forma:NgForm){
+    console.log(forma.controls.parametro.value);
+    console.log(forma);
   }
 
 }
