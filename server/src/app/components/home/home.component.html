@@ -1,51 +1,3 @@
-<!-- <div class="container">
-  <div class="row">
-    <div class="col-12 col-md-6">
-      <h1>Selecciona el dispositivo</h1>
-      <app-dispositivos (dispositivoSeleccionado)="setDispositivo( $event )"></app-dispositivos>
-    </div>
-    <div class="col-12 col-md-6" *ngIf="dispositivo">
-      <h1>Selecciona el parametro del dispositivo</h1>
-      <app-parametros [params]="parametros" (parametroSeleccionado)="setParametro( $event )"></app-parametros>
-    </div>
-  </div>
-  <hr>
-  <div class="row text-center" *ngIf="parametro">
-    <div class="col-12">
-      <h1>Grafico {{ parametro }} / {{ dispositivo }}</h1>
-      <button (click)="mostrarGrafica(5)">Ver grafico (5)</button>
-      <button (click)="mostrarGrafica(10)">Ver grafico (10)</button>
-      <button (click)="mostrarGrafica(20)">Ver grafico (20)</button>
-      <button (click)="mostrarGrafica(30)">Ver grafico (30)</button>
-      <button (click)="mostrarGrafica(50)">Ver grafico (50)</button>
-    </div>
-  </div>
-  <div class="row" *ngIf="data">
-    <div class="col-md-6">
-      <div style="display: block;">
-      <canvas baseChart width="400" height="400"
-                  [datasets]="lineChartData"
-                  [labels]="lineChartLabels"
-                  [options]="lineChartOptions"
-                  [colors]="lineChartColors"
-                  [legend]="lineChartLegend"
-                  [chartType]="lineChartType"
-                  (chartHover)="chartHovered($event)"
-                  (chartClick)="chartClicked($event)"></canvas>
-      </div>
-    </div>
-    <div class="col-md-6" style="margin-bottom: 10px">
-      <table class="table table-responsive table-condensed">
-        <tr>
-          <th *ngFor="let label of lineChartLabels">{{label | date:'short' }}</th>
-        </tr>
-        <tr *ngFor="let d of lineChartData">
-          <td *ngFor="let label of lineChartLabels; let j=index">{{d && d.data[j]}}</td>
-        </tr>
-      </table>
-    </div>
-  </div>
-</div> -->
 <section style="background-color:#FF9278;">
   <div class="container">
     <div class="row text-center text-white padding25" >
@@ -61,26 +13,26 @@
   <div class="container">
     <div class="row justify-content-center text-center align-items-center">
       <div class="col-6 col-md-3 padding25">
-        <h2> 50 °C</h2>
+        <h2> {{ _firebaseService.dataLast.TC.value }} °C</h2>
         <p>Temperatura</p>
       </div>
       <div class="col-6 col-md-3 padding25">
-        <h2> 70 %</h2>
+        <h2> {{ _firebaseService.dataLast.HUM.value }} %</h2>
         <p>Humedad</p>
       </div>
       <div class="col-6 col-md-3 padding25">
-        <h2> 958 Pa</h2>
+        <h2> {{ _firebaseService.dataLast.PRES.value }} Pa</h2>
         <p>Presión</p>
       </div>
       <div class="col-6 col-md-3 padding25">
-        <h2> 1859 PPM </h2>
+        <h2> {{ _firebaseService.dataLast.CO2.value }} PPM </h2>
         <p>CO2</p>
       </div>
     </div>
     <div class="row justify-content-around align-items-center">
       <div class="col-12 col-md-7 text-center">
-        <p class="nota">Temperatura, Humedad y presión obtenida a las XX:YY del DD-MM-AAAA</p>
-        <p class="nota">CO2 obtenida a las XX:YY del DD-MM-AAAA</p>
+        <p class="nota">Temperatura, Humedad y presión obtenida a las {{ _firebaseService.dataLast.TC.time | date:'HH:mm dd-MMM-y' }}</p>
+        <p class="nota">CO2 obtenida a las {{ _firebaseService.dataLast.CO2.time | date:'HH:mm dd-MMM-y' }}</p>
       </div>
       <div class="col-12 col-md-3 padding25">
         <button type="button" class="btn btn-lg btn-block  btn-outline-light" [routerLink]="['/history']" >Ver historico</button>
