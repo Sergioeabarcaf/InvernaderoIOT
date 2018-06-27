@@ -18,8 +18,8 @@ export class FirebaseService {
 
   constructor(private http:HttpClient) {
     this.getDataLast("last.json");
-    this.getDataCO224("dataDevices/WaspCO2.json");
-    this.getDataTHP24("dataDevices/WaspTHP.json");
+    this.getDataCO224("dataDevices/00:13:A2:00:41:5B:67:EB.json");
+    this.getDataTHP24("dataDevices/00:13:A2:00:41:04:37:F1.json");
   }
 
   getDataLast(link:string){
