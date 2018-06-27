@@ -5,93 +5,59 @@ import 'rxjs/Rx';
 @Injectable()
 export class FirebaseService {
 
-  dataFiresbase:any;
-  valuesArray:any[] = [];
-  paramValue:any[] = [];
+  url:string = "https://libelium-91af3.firebaseio.com/";
 
-  data:any[] = [];
-  dispositivos:string[] = [];
+  dataLast:any = {};
 
-  dataGrafica:number[] = [];
-  timeGrafica:string[] = [];
-  grafica:any = {};
-
-  urlEM:string = "https://libelium-91af3.firebaseio.com/";
+  temp24:any = [{}]
+  hum24:any = [{}]
+  pres24:any = [{}]
+  co224:any = [{}]
+  labelTHP24:any = []
+  labelCO224:any = []
 
   constructor(private http:HttpClient) {
-    // obtener dispositivos
-    let urlDevices = `${ this.urlEM }dispositivos.json`;
-    this.http.get( urlDevices ).subscribe( res => {
-      for(let dispositivo of Object.keys(res)){
-        this.dispositivos.push(dispositivo);
-      }
-    });
+    this.getDataLast("last.json");
+    this.getDataCO224("dataDevices/WaspCO2.json");
+    this.getDataTHP24("dataDevices/WaspTHP.json");
+  }
 
-    let urlData = `${ this.urlEM }estacionMetereologica.json?orderBy="$key"&limitToLast=50`;
-    this.http.get( urlData ).subscribe( res => {
-      console.log(res)
-      this.dataFiresbase = res;
-      // Recorrer el JSON que en cada llave contiene un conjunto de datos
-      let x:number = 0
-      for( let objeto of Object.keys(this.dataFiresbase) ){
-         this.data[x] = this.dataFiresbase[objeto];
-         let i:number = 0;
-         for (let param of Object.keys(this.dataFiresbase[objeto].values)){
-           // extraer el parametro y valor para agregarlos en valuesArray, una vez agregados, limpiar el valuesArray
-           this.paramValue[0] = param;
-           this.paramValue[1] = parseFloat(this.dataFiresbase[objeto].values[param]);
-           this.valuesArray[i] = this.paramValue;
-           this.paramValue = [];
-           i++;
-         }
-         this.data[x].values = this.valuesArray;
-         this.valuesArray = [];
-         x++;
-       }
+  getDataLast(link:string){
+    let url = `${ this.url }${ link }`
+    this.http.get( url ).subscribe( res => {
+      this.dataLast = res;
+    });
+  }
+
+  getDataCO224(link:string){
+    let values:any = []
+    let url = `${ this.url }${ link }?orderBy="$key"&limitToLast=48`
+    this.http.get( url ).subscribe( res => {
+      for(let x of Object.keys(res)){
+        values.push(parseFloat(res[x].values.CO2))
+        this.labelCO224.push(res[x].timestamp)
+      }
+      this.co224[0].data = values;
     })
   }
 
-  getParamsDispositivo(dispositivo:string){
-    // Buscar en el arreglo data el dispositivo, cuando aparece, se obtiene sus values y termina
-    for( let dat of this.data){
-      if( dispositivo == dat.device){
-        return dat.values
+  getDataTHP24(link:string){
+    let valuesTemp:any = []
+    let valuesHum:any = []
+    let valuesPres:any = []
+    let url = `${ this.url }${ link }?orderBy="$key"&limitToLast=48`
+    this.http.get( url ).subscribe( res => {
+      for(let x of Object.keys(res)){
+        valuesTemp.push(parseFloat(res[x].values.TC))
+        valuesHum.push(parseFloat(res[x].values.HUM))
+        valuesPres.push(parseFloat(res[x].values.PRES))
+        this.labelTHP24.push(res[x].timestamp)
       }
-    }
-  }
+      this.temp24[0].data = valuesTemp;
+      this.hum24[0].data = valuesHum;
+      this.pres24[0].data = valuesPres;
+    })
 
-  getDataGrafica(dispositivo:string, parametro:string, limit:number){
-    // Se limpian las variables
-    this.grafica = {};
-    this.dataGrafica = [];
-    this.timeGrafica = [];
-    let i:number = 0;
-    // Se recorre la data para encontrar el dispositivo y parametro coincidan con el solicitado
-    for( let data of this.data ){
-      if( dispositivo == data.device){
-        let x:number = 0;
-        for( let param of data.values){
-          // Si se encuentran, se agregan a los arreglos de tiempo y data
-          if( parametro == data.values[x][0]){
-            this.dataGrafica.unshift(data.values[x][1])
-            this.timeGrafica.unshift(data.timestamp);
-          }
-          x++;
-        }
-      }
-      i++;
-      if(i > limit){
-        this.grafica['data'] = this.dataGrafica;
-        this.grafica['time'] = this.timeGrafica;
-        this.grafica['dispositivo'] = dispositivo;
-        return this.grafica;
-      }
-    }
-    // Una vez recorrido todo, se agrega al objeto los parametros encontrados.
-    this.grafica['data'] = this.dataGrafica;
-    this.grafica['time'] = this.timeGrafica;
-    this.grafica['dispositivo'] = dispositivo;
-    return this.grafica;
   }
 
 }
