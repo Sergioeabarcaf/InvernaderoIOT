@@ -45,4 +45,8 @@ def checkData(time,data):
         if r["time"] == time:
             return False
         else:
+            if r["time"] < time:
+                print "el dato es nuevo"
+            else:
+                print "el dato es viejo"
             return True
