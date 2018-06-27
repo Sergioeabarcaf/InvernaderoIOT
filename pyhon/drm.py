@@ -16,11 +16,11 @@ def clean(data):
 def cleanArduino(data):
     dataClean = []
     for x in range((len(data) - 1)):
-        dataClean.append(data[x])  
+        dataClean.append(data[x])
     return dataClean
 
 
-def obtenerData(dataTime,dataValues):
+def obtenerData(dataValues):
     data = dataValues.split("#")
     if ( len(data) > 4):
         device = str(data[2])
