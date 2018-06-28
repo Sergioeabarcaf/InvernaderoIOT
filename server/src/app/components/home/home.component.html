@@ -13,19 +13,19 @@
   <div class="container">
     <div class="row justify-content-center text-center align-items-center">
       <div class="col-6 col-md-3 padding25">
-        <h2> {{ _firebaseService.dataLast.TC.value }} °C</h2>
+        <h2> {{ _firebaseService.dataLast.TC.value | number:'2.1-1'}} °C</h2>
         <p>Temperatura</p>
       </div>
       <div class="col-6 col-md-3 padding25">
-        <h2> {{ _firebaseService.dataLast.HUM.value }} %</h2>
+        <h2> {{ _firebaseService.dataLast.HUM.value | number:'2.1-1'}} %</h2>
         <p>Humedad</p>
       </div>
       <div class="col-6 col-md-3 padding25">
-        <h2> {{ _firebaseService.dataLast.PRES.value }} Pa</h2>
+        <h2> {{ (_firebaseService.dataLast.PRES.value / 100) | number:'2.1-1'}} hPa</h2>
         <p>Presión</p>
       </div>
       <div class="col-6 col-md-3 padding25">
-        <h2> {{ _firebaseService.dataLast.CO2.value }} PPM </h2>
+        <h2> {{ _firebaseService.dataLast.CO2.value | number:'2.1-1'}} PPM </h2>
         <p>CO2</p>
       </div>
     </div>
