@@ -82,8 +82,11 @@ void loop()
     Utils.blinkRedLED();
   }
 
-  // Espera de 1800000 segundos (30 minutos) para un nuevo envio de Frame
-  delay(1800000);
+  // Dormir por 3 minutos
+  USB.println("Me voy a dormir una pequeña siesta de 30 minutos:). Ya vengo! ");
+  PWR.deepSleep("00:00:30:00", RTC_OFFSET, RTC_ALM1_MODE1, ALL_OFF);
+  USB.ON();
+  USB.println("Ya desperte!!!!");
 }
 
 // Revisar parametros de conexion
