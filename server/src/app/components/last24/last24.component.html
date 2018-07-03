@@ -3,7 +3,15 @@
     <h2> {{ parametro }}</h2>
   </div>
   <div class="col-12 col-md-3">
-  <!-- Gauge -->
+    <ngx-gauge [type]="gaugeType"
+             [value]="gaugeValue"
+             [label]="gaugeLabel"
+             [append]="gaugeAppendText"
+             [min] = "gaugeMin"
+             [max]= "gaugeMax"
+             [foregroundColor] = "gaugeForegroundColor"
+             [backgroundColor] = "gaugeBackgroundColor">
+  </ngx-gauge>
   </div>
   <div class="col-12 col-md-9">
     <div style="display: block;">
