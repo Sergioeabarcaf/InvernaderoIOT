@@ -4,8 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { ChartsModule } from 'ng2-charts';
-// https://github.com/mattlewis92/angular-gauge
-import { GaugeModule } from 'angular-gauge';
 
 import { APP_ROUTING } from './app.routes';
 
@@ -35,8 +33,7 @@ import { Last24Component } from './components/last24/last24.component';
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    ChartsModule,
-    GaugeModule.forRoot()
+    ChartsModule
   ],
   providers: [FirebaseService],
   bootstrap: [AppComponent]

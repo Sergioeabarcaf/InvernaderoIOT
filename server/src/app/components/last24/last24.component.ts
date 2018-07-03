@@ -8,11 +8,6 @@ import { Component, Input } from '@angular/core';
 export class Last24Component {
   @Input() parametro:string;
 
-  //gauge
-  @Input() gaugeValue:number;
-  @Input() gaugeMin:number;
-  @Input() gaugeMax:number;
-
   //lineChart
   @Input() lineChartData:Array<any>;
   @Input() lineChartLabels:Array<any>;
