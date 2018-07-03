@@ -11,7 +11,7 @@
     <div class="col-12 col-md-9">
       <app-last24 [parametro]="paramTemp" [lineChartData]="_firebaseService.temp24" [lineChartLabels]="_firebaseService.labelTHP24" [gaugeValue]="_firebaseService.dataLast.TC.value" [gaugeMin]="gaugeMinTemp" [gaugeMax]="gaugeMaxTemp" [gaugeAppendText]="gaugeUMTemp"></app-last24>
       <app-last24 [parametro]="paramHum" [lineChartData]="_firebaseService.hum24" [lineChartLabels]="_firebaseService.labelTHP24" [gaugeValue]="_firebaseService.dataLast.HUM.value" [gaugeMin]="gaugeMinHum" [gaugeMax]="gaugeMaxHum" [gaugeAppendText]="gaugeUMHum"></app-last24>
-      <app-last24 [parametro]="paramPres" [lineChartData]="_firebaseService.pres24" [lineChartLabels]="_firebaseService.labelTHP24" [gaugeValue]="_firebaseService.dataLast.PRES.value" [gaugeMin]="gaugeMinPres" [gaugeMax]="gaugeMaxPres" [gaugeAppendText]="gaugeUMPres"></app-last24>
-      <app-last24 [parametro]="paramCO2" [lineChartData]="_firebaseService.co224" [lineChartLabels]="_firebaseService.labelCO224" [gaugeValue]="_firebaseService.dataLast.CO2.value" [gaugeMin]="gaugeMinCO2" [gaugeMax]="gaugeMaxCO2" [gaugeAppendText]="gaugeUMCO2"></app-last24>
+      <app-last24 [parametro]="paramPres" [lineChartData]="_firebaseService.pres24" [lineChartLabels]="_firebaseService.labelTHP24" [gaugeValue]="_firebaseService.dataLast.PRES.value / 100 | number:'2.1-1'" [gaugeMin]="gaugeMinPres" [gaugeMax]="gaugeMaxPres" [gaugeAppendText]="gaugeUMPres"></app-last24>
+      <app-last24 [parametro]="paramCO2" [lineChartData]="_firebaseService.co224" [lineChartLabels]="_firebaseService.labelCO224" [gaugeValue]="_firebaseService.dataLast.CO2.value | number:'2.1-1'" [gaugeMin]="gaugeMinCO2" [gaugeMax]="gaugeMaxCO2" [gaugeAppendText]="gaugeUMCO2"></app-last24>
     </div>
 </div>
