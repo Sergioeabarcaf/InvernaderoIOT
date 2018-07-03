@@ -12,14 +12,21 @@ export class HistoryComponent {
   paramHum:string = "Humedad";
   paramPres:string = "Presión";
   paramCO2:string = "Dioxido de carbono";
+
+  gaugeUMTemp:string="°C";
+  gaugeUMHum:string="% HR";
+  gaugeUMPres:string="hPa";
+  gaugeUMCO2:string="PPM";
+
   gaugeMinTemp:number=-20;
   gaugeMinHum:number=0;
   gaugeMinPres:number=0;
-  gaugeMinCo2:number=0;
+  gaugeMinCO2:number=0;
+
   gaugeMaxTemp:number=100;
   gaugeMaxHum:number=100;
   gaugeMaxPres:number=110000;
-  gaugeMaxCo2:number=2000;
+  gaugeMaxCO2:number=2000;
 
   constructor(public _firebaseService:FirebaseService) {
 

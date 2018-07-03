@@ -12,10 +12,15 @@ export class Last24Component {
   gaugeType = "arch";
   gaugeForegroundColor = "rgba(0, 150, 136, 1)"; // definir colores linea
   gaugeBackgroundColor = "rgba(0, 0, 0, 0.1)"; // definir colores fondo
-  @Input() gaugeValue: number = 28.3; //Input value
-  @Input() gaugeMin: number = 0; //Input value min
-  @Input() gaugeMax: number = 100; //Input value Max
-  @Input() gaugeAppendText: string = "km/hr"; // Input Unit Mes
+  thresholdConfig = {
+        '0': {color: 'green'},
+        '40': {color: 'orange'},
+        '75.5': {color: 'red'}
+    };
+  @Input() gaugeValue: number; //Input value = 28.3
+  @Input() gaugeMin: number; //Input value min  = 0
+  @Input() gaugeMax: number; //Input value Max  = 100
+  @Input() gaugeAppendText: string;  // Input Unit Mes = "km/hr";
 
 
   //lineChart
