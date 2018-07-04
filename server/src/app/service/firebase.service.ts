@@ -35,7 +35,7 @@ export class FirebaseService {
     this.http.get( url ).subscribe( res => {
       for(let x of Object.keys(res)){
         values.push(parseFloat(res[x].values.CO2))
-        this.labelCO224.push(res[x].timestamp)
+        this.labelCO224.push(this.timestampToHours(res[x].timestamp))
       }
       this.co224[0].data = values;
     })
@@ -48,16 +48,22 @@ export class FirebaseService {
     let url = `${ this.url }${ link }?orderBy="$key"&limitToLast=48`
     this.http.get( url ).subscribe( res => {
       for(let x of Object.keys(res)){
-        valuesTemp.push(parseFloat(res[x].values.TC))
-        valuesHum.push(parseFloat(res[x].values.HUM))
-        valuesPres.push(parseFloat(res[x].values.PRES))
-        this.labelTHP24.push(res[x].timestamp)
+        valuesTemp.push(parseFloat(res[x].values.TC));
+        valuesHum.push(parseFloat(res[x].values.HUM));
+        valuesPres.push(parseFloat(res[x].values.PRES));
+        this.labelTHP24.push(this.timestampToHours(res[x].timestamp));
       }
       this.temp24[0].data = valuesTemp;
       this.hum24[0].data = valuesHum;
       this.pres24[0].data = valuesPres;
     })
+  }
 
+  timestampToHours(timestamp:string){
+    let arrayTimestamp = timestamp.split("T");
+    let arrayHours = arrayTimestamp[1].split(":");
+    let strHour = `${ arrayHours[0] }:${ arrayHours[1] }`;
+    return strHour;
   }
 
 }
