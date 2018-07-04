@@ -37,25 +37,47 @@ float voltages[] =       { POINT1_VOLT_CO2, POINT2_VOLT_CO2, POINT3_VOLT_CO2 };
 void setup()
 {
   USB.ON();
-  xbeeZB.ON();
-  USB.println("Obtener CO2 desde Sensor Board V3 y enviar en Frame a ZB");
-
-   //Configurar ID de Frame
-  frame.setID( WASPMOTE_ID );
-
   delay(3000);
-  //Calibrar Sensor
-  CO2Sensor.setCalibrationPoints(voltages, concentrations, numPoints);
-  CO2Sensor.ON();
+  USB.println("Obtener CO2 desde Sensor Board V3 y enviar en Frame a ZB");
+  
+  //Configurar ID de Frame
+  frame.setID( WASPMOTE_ID );
 }
 
 
 void loop()
 {
+  // Dormir por 10 minutos
+  USB.println("Me voy a dormir una pequeña siesta de 20 minuto :) Ya vengo! ");
+  // http://www.libelium.com/downloads/documentation/waspmote-interruptions-programming_guide.pdf pag:12
+  // http://www.libelium.com/downloads/documentation/waspmote-rtc-programming_guide.pdf
+  PWR.deepSleep("00:00:20:00", RTC_OFFSET, RTC_ALM1_MODE2, ALL_OFF);
+  //Inicio de parametros necesarios y configuraciones
+  USB.ON();
+  delay(3000);
+  USB.println("Ya desperte!!!!, ahora mandare el dato del CO2... calmacion, necesito configurarme");
+  //Activar red y verificar conexion
+  xbeeZB.ON();
+  checkNetworkParams();
+  //Calibrar Sensor
+  CO2Sensor.setCalibrationPoints(voltages, concentrations, numPoints);
+  Gases.ON(); 
+  CO2Sensor.ON();
+
+  //Ver parametros del sensor CO2
+  float CO2Vol = CO2Sensor.readVoltage();
+  float CO2PPM = CO2Sensor.readConcentration();
+  USB.print(F("CO2 Sensor Voltage: "));
+  USB.print(CO2Vol);
+  USB.print(F("volts |"));
+  USB.print(F(" CO2 concentration estimated: "));
+  USB.print(CO2PPM);
+  USB.println(F(" ppm"));
+
   //Creacion de Frame en modo ASCII
   frame.createFrame(ASCII);
   frame.setFrameSize(92);
-  frame.addSensor(SENSOR_GASES_CO2, CO2Sensor.readConcentration());
+  frame.addSensor(SENSOR_GASES_CO2, CO2PPM);
   //Mostrar Frame a enviar
   frame.showFrame();
 
@@ -81,12 +103,6 @@ void loop()
     // blink red LED
     Utils.blinkRedLED();
   }
-
-  // Dormir por 3 minutos
-  USB.println("Me voy a dormir una pequeña siesta de 30 minutos:). Ya vengo! ");
-  PWR.deepSleep("00:00:30:00", RTC_OFFSET, RTC_ALM1_MODE1, ALL_OFF);
-  USB.ON();
-  USB.println("Ya desperte!!!!");
 }
 
 // Revisar parametros de conexion
@@ -96,6 +112,7 @@ void checkNetworkParams()
   xbeeZB.getAssociationIndication();
   while ( xbeeZB.associationIndication != 0 )
   {
+    USB.print(".");
     delay(2000);
     xbeeZB.getAssociationIndication();
   }
