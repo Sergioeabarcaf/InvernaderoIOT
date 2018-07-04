@@ -1,32 +1,35 @@
 <div class="row justify-content-center">
-  <div class="col-12 text-center">
+  <div class="col-12 text-center padding25">
     <h2> {{ parametro }}</h2>
   </div>
-  <div class="col-12 col-md-3">
-    <ngx-gauge [type]="gaugeType"
-             [value]="gaugeValue"
-             [label]="gaugeLabel"
-             [append]="gaugeAppendText"
-             [min] = "gaugeMin"
-             [max]= "gaugeMax"
-             [foregroundColor] = "gaugeForegroundColor"
-             [backgroundColor] = "gaugeBackgroundColor"
-             [thick] = 20
-             [thresholds]="thresholdConfig">
-  </ngx-gauge>
+  <div class="col-12 col-md-3 text-center">
+    <h3>Actual.</h3>
+    <div class="d-block">
+      <ngx-gauge [type] = "gaugeType"
+               [value] = "gaugeValue"
+               [label] = "gaugeLabel"
+               [append] = "gaugeAppendText"
+               [min] = "gaugeMin"
+               [max] = "gaugeMax"
+               [foregroundColor] = "gaugeForegroundColor"
+               [backgroundColor] = "gaugeBackgroundColor"
+               [thick] = 20
+               [thresholds] = "thresholdConfig">
+     </ngx-gauge>
+    </div>
   </div>
-  <div class="col-12 col-md-9">
-    <div style="display: block;">
-      <canvas baseChart width="350" height="100"
-                [datasets]= lineChartData
-                [labels]= lineChartLabels
-                [options]="{responsive: true}"
-                [colors]="lineChartColors"
-                [legend]= false
-                [chartType]="lineChartType"
-                (chartHover)="chartHovered($event)"
-                (chartClick)="chartClicked($event)"
-                style="max-height:200px;">
+  <div class="col-12 col-md-9 text-center">
+    <h3>Ultimas 24 Horas.</h3>
+    <div class="d-block">
+      <canvas baseChart width="2.35" height="1"
+                [datasets] =  lineChartData
+                [labels] =  lineChartLabels
+                [options] = "{responsive: true}"
+                [colors] = "lineChartColors"
+                [legend] =  false
+                [chartType] = "lineChartType"
+                (chartHover) = "chartHovered($event)"
+                (chartClick) = "chartClicked($event)">
       </canvas>
     </div>
   </div>
