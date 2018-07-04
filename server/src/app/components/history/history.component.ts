@@ -25,8 +25,29 @@ export class HistoryComponent {
 
   gaugeMaxTemp:number=100;
   gaugeMaxHum:number=100;
-  gaugeMaxPres:number=110000;
+  gaugeMaxPres:number=1100;
   gaugeMaxCO2:number=2000;
+
+  thresholdConfigTemp = {
+    '-20': {color: 'blue'},
+    '15': {color: 'green'},
+    '30': {color: 'red'}
+  };
+  thresholdConfigHum = {
+    '0': {color: 'blue'},
+    '50': {color: 'green'},
+    '80': {color: 'red'}
+  };
+  thresholdConfigPress = {
+    '0': {color: 'blue'},
+    '900': {color: 'green'},
+    '1000': {color: 'red'}
+  };
+  thresholdConfigCO2 = {
+    '0': {color: 'blue'},
+    '700': {color: 'green'},
+    '1500': {color: 'red'}
+  };
 
   constructor(public _firebaseService:FirebaseService) {
 

@@ -12,11 +12,7 @@ export class Last24Component {
   gaugeType = "arch";
   gaugeForegroundColor = "rgba(0, 150, 136, 1)"; // definir colores linea
   gaugeBackgroundColor = "rgba(0, 0, 0, 0.1)"; // definir colores fondo
-  thresholdConfig = {
-        '0': {color: 'green'},
-        '40': {color: 'orange'},
-        '75.5': {color: 'red'}
-    };
+  @Input() thresholdConfig;
   @Input() gaugeValue: number; //Input value = 28.3
   @Input() gaugeMin: number; //Input value min  = 0
   @Input() gaugeMax: number; //Input value Max  = 100
