@@ -20,9 +20,11 @@
       <div class="form-group col-4 col-md-12">
         <label>Ingrese cantidad de datos a visualizar: </label>
         <input class="form-control" type="number" name="cantidad" ngModel>
+        <p *ngIf="forma.value.tipo == 'Días'">Cantidad máxima: 30 días</p>
+        <p *ngIf="forma.value.tipo == 'Horas'">Cantidad máxima: 1440 horas</p>
       </div>
     </div>
-    <div class="col-12 text-center">
+    <div class="col-12 text-center" *ngIf="forma.value.cantidad && forma.value.parametro && forma.value.tipo">
       <button type="submit" class="btn btn-primary">Filtrar</button>
     </div>
   </form>
