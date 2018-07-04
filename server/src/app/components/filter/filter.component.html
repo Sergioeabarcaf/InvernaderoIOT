@@ -1,27 +1,29 @@
-<form (ngSubmit)="verGrafico(forma)" #forma="ngForm">
-  <div class="form-row align-items-end">
-    <div class="form-group col-4 col-md-12">
-      <label>Seleccione parametro</label>
-      <select class="form-control" name="parametro" ngModel>
-        <option>Temperatura</option>
-        <option>Humedad</option>
-        <option>Presión</option>
-        <option>CO2</option>
-      </select>
+<div class="container">
+  <form (ngSubmit)="verGrafico(forma)" #forma="ngForm">
+    <div class="form-row align-items-end">
+      <div class="form-group col-4 col-md-12">
+        <label>Seleccione parametro</label>
+        <select class="form-control" name="parametro" ngModel>
+          <option>Temperatura</option>
+          <option>Humedad</option>
+          <option>Presión</option>
+          <option>CO2</option>
+        </select>
+      </div>
+      <div class="form-group col-4 col-md-12">
+        <label>Consultar por:</label>
+        <select class="form-control" name="tipo" ngModel>
+          <option>Días</option>
+          <option>Horas</option>
+        </select>
+      </div>
+      <div class="form-group col-4 col-md-12">
+        <label>Ingrese cantidad de datos a visualizar: </label>
+        <input class="form-control" type="number" name="cantidad" ngModel>
+      </div>
     </div>
-    <div class="form-group col-4 col-md-12">
-      <label>Consultar por:</label>
-      <select class="form-control" name="tipo" ngModel>
-        <option>Días</option>
-        <option>Horas</option>
-      </select>
+    <div class="col-12 text-center">
+      <button type="submit" class="btn btn-primary">Filtrar</button>
     </div>
-    <div class="form-group col-4 col-md-12">
-      <label>Ingrese cantidad de datos a visualizar: </label>
-      <input class="form-control" type="number" name="cantidad" ngModel>
-    </div>
-  </div>
-  <div class="col-12 text-center">
-    <button type="submit" class="btn btn-primary">Filtrar</button>
-  </div>
-</form>
+  </form>
+</div>
