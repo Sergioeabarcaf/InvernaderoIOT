@@ -8,18 +8,22 @@
 
 Gas CO2(SOCKET_1);
 float temperatura, humedad, presion, concentracionCO2;
-int errorCO2;
+int intentoEncender = 0;
 
 void setup()
 {
   USB.ON();
-  USB.println("Estoy tratandi de encender");
-  errorCO2 = CO2.ON();
-  USB.println(errorCO2);
-  USB.println("Ese fue el error");
-  delay(120000);
-  // put your setup code here, to run once:
-
+  USB.println("Estoy tratando de encender");
+  if(CO2.ON() != 1){
+    USB.println("error es -1");
+    intentoEncender++;
+  }
+  else{
+    USB.print("Se intento: ");
+    USB.println(intentoEncender);
+    USB.println("Encendio bien, esperar 120 segundos para calentar sensor");
+    delay(120000);
+  }
 }
 
 
@@ -42,6 +46,5 @@ void loop()
   USB.println(concentracionCO2);
   USB.println("=======================================================");
   delay(5000);
-  // put your main code here, to run repeatedly:
 
 }
