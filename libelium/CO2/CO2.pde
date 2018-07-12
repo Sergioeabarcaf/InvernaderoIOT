@@ -24,8 +24,6 @@ uint8_t error;
 
 //Inicializador Sensor Board con CO2
 Gas CO2(SOCKET_1);
-//Inicializador de variables a obtener
-float temperatura, humedad, presion, concentracionCO2;
 //====================================================================
 
 void setup()
