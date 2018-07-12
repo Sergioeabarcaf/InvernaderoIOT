@@ -71,8 +71,10 @@ void loop()
     USB.println(error);
   }
 
+  USB.println(RTC.getTime());
+
   //Dormir durante un tiempo
-  PWR.deepSleep("00:00:30:00",RTC_OFFSET, RTC_ALM1_MODE4, SENSOR_ON);
+  PWR.deepSleep("00:00:30:00",RTC_OFFSET, RTC_ALM1_MODE4, ALL_ON);
 
 }
 
