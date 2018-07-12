@@ -32,40 +32,31 @@ void setup()
   USB.println("Obtener Temperatura, Humedad y Presión");
   USB.println("Enviar Frame con datos obtenidos via ZB.");
 
-  //Configurar ID de Frame
-  frame.setID( WASPMOTE_ID );
+  Agriculture.ON();
 
+  //Inicializar Xbee
   xbeeZB.ON();
   checkNetworkParams();
-  
-  delay(1000);
+
+  //Configurar ID de Frame
+  frame.setID( WASPMOTE_ID );
 }
 
 
 void loop()
 {
-
   //Creacion de Frame en modo ASCII
   frame.createFrame(ASCII);
   frame.setFrameSize(92);
-
-  // Obtener Temp, Hum y Press para agregar a Frame
-  Agriculture.ON();
-  delay(500);
-
+  //Cargar los parametros al frame
   frame.addSensor(SENSOR_AGR_TC, Agriculture.getTemperature());
   frame.addSensor(SENSOR_AGR_HUM, Agriculture.getHumidity());
   frame.addSensor(SENSOR_AGR_PRES, Agriculture.getPressure());
-  
-  Agriculture.OFF();
-  delay(500);
-  
-  // visualizar Frame
+  //Mostrar Frame
   frame.showFrame();
-
-  //Enviar Frame via ZB
-  error = xbeeZB.send( RX_ADDRESS, frame.buffer, frame.length );
   
+   //Enviar por ZB
+  error = xbeeZB.send( RX_ADDRESS, frame.buffer, frame.length );
   // Comprobar que el envio sea correcto
   if ( error == 0 )
   {
@@ -77,32 +68,20 @@ void loop()
     USB.println(error);
   }
 
-  // Dormir por 3 minutos
-  USB.println("Me voy a dormir una pequeña siesta de 30 minutos:). Ya vengo! ");
-  PWR.deepSleep("00:00:30:00", RTC_OFFSET, RTC_ALM1_MODE1, ALL_OFF);
-  USB.ON();
-  USB.println("Ya desperte!!!!");
-  
+  //Dormir durante un tiempo
+  PWR.deepSleep("00:00:30:00",RTC_OFFSET, RTC_ALM1_MODE4, ALL_ON);
 }
 
 // Revisar parametros de conexion
 void checkNetworkParams()
 {
-  // 1. get operating 64-b PAN ID
   xbeeZB.getOperating64PAN();
-
-  // 2. wait for association indication
   xbeeZB.getAssociationIndication();
- 
   while( xbeeZB.associationIndication != 0 )
   { 
     delay(2000);
-    
-    // get operating 64-b PAN ID
     xbeeZB.getOperating64PAN();   
     xbeeZB.getAssociationIndication();
   }
-
   USB.println("Conecto a la red!");
-
 }
