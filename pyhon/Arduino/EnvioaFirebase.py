@@ -7,36 +7,41 @@ default_app = firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://proyecto-cote.firebaseio.com/'
 })
 
-def send(timestamp,dispositivo,data,feed_key):
+# envio de datos recibe tres listas valores, parametros (feed_key),tiempo de creacion
+def send(time,dispositivo,valores,parametros):
     datasend = {}
     datavalues = {}
     urlDevice = 'dataDevices/' + dispositivo
     ref = db.reference(urlDevice)
-    datavalues[feed_key] = data
-    datasend["Timestamp"]= timestamp
+    for i in range(len(parametros)):
+        datavalues[parametros[i]] = valores[i]
+        datasend["Timestamp"]= time[i]
     datasend["values"]= datavalues
-##    
+##
+    print(datasend)
     ref.push(datasend)
 
-def updateLast(timestamp,data,feed_key):
+def updateLast(time,valores,parametros):
     param = {}
     send = {}
     ref = db.reference('last')
-    send["time"] = timestamp
-    send["value"] = str(data)
-    param[feed_key] = send
-    send = {}
-    print (param)
+    for i in range(len(parametros)):
+        send["time"] = time[i]
+        send["value"] = str(valores[i])
+        param[parametros[i]] = send
+        send = {}
+        print (param)
     ref.update(param)
 
-def checkData(time,data, feed_key):
-    urlCheck = "last/" + feed_key
-    ref = db.reference(urlCheck)
-    r = ref.get()
-    if (r == None):
-        return True
-    else:
-        if r["time"] == time:
-            return False
-        else:
+def checkData(time,valores,parametros):
+    for i in range(len(parametros)):
+        urlCheck = "last/" + parametros[i]
+        ref = db.reference(urlCheck)
+        r = ref.get()
+        if (r == None):
             return True
+        else:
+            if r["time"] == time[i]:
+                return False
+            else:
+                return True
