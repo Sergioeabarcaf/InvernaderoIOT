@@ -21,6 +21,16 @@
 #include "Adafruit_MQTT.h"
 #include "Adafruit_MQTT_FONA.h"
 #include "DHT.h"
+#include "OneWire.h"
+#include "DallasTemperature.h"
+
+/*
+  # Sensor DFrobot moisture sensor
+  # 0  ~300     seco
+  # 300~700     humedo
+  # 700~950     en agua
+
+*/
 
 /*************************Geolocalizacion ********************************/
 float latitude, longitude, speed_kph, heading, altitude;
@@ -30,14 +40,14 @@ uint16_t vbat;
 
 /*************************** FONA Pins ***********************************/
 
-/*** 
-FONA 808               ARDUINO UNO
-GND -----------------> GND
-VIO <----------------- 5V
-RX  <----------------- 2 (TX)
-TX  -----------------> 3 (RX)
-RTS -----------------> 4 GPIO
-KEY -----------------> GND */
+/***
+  FONA 808               ARDUINO UNO
+  GND -----------------> GND
+  VIO <----------------- 5V
+  RX  <----------------- 2 (TX)
+  TX  -----------------> 3 (RX)
+  RTS -----------------> 4 GPIO
+  KEY -----------------> GND */
 
 // Definicion pins FONA
 #define FONA_RX  2
@@ -48,12 +58,18 @@ SoftwareSerial fonaSS = SoftwareSerial(FONA_TX, FONA_RX);
 Adafruit_FONA fona = Adafruit_FONA(FONA_RST);
 
 
-///************************Sensor de humedad*****************************/
-//#define DHTPIN    34    //pin de conexi�n
-//#define DHTTYPE   DHT22 //tipo aplicado
+///************************Sensor de humedad DHT11*****************************/
+#define DHTPIN    7  //pin de conexi�n
+#define DHTTYPE   DHT11 //tipo aplicado
+
+///***********************Moiseture Sensor DFrobot*************************************/
+#define MoistureSensor  A0
+
+///***********************Sensor Temperatura resistente al agua************************/
+#define SensorTempAgua 6
 
 /*************************** Inicializaci�n DHT ************************/
-//DHT dht (DHTPIN, DHTTYPE);
+DHT dht (DHTPIN, DHTTYPE);
 // Connect pin 1 (on the left) of the sensor to +5V
 // NOTE: If using a board with 3.3V logic like an Arduino Due connect pin 1
 // to 3.3V instead of 5V!
@@ -61,7 +77,9 @@ Adafruit_FONA fona = Adafruit_FONA(FONA_RST);
 // Connect pin 4 (on the right) of the sensor to GROUND
 // Connect a 10K resistor from pin 2 (data) to pin 1 (power) of the sensor
 
-
+/************************Inicializacion Sensor Temperatura Resistente al Agua****/
+OneWire oneWireObjeto(SensorTempAgua);
+DallasTemperature sensorDS18B20(&oneWireObjeto);
 /************************* WiFi Access Point *********************************/
 
 // Optionally configure a GPRS APN, username, and password.
@@ -107,11 +125,17 @@ Adafruit_MQTT_Publish dht_temp_feed = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME 
 /**** DHT22: humedad ****/
 Adafruit_MQTT_Publish dht_hum_feed = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/dht22_hum");
 
+/**** Moisture Sensor DFrobot ***/
+Adafruit_MQTT_Publish moisture_sensor_feed = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/hc");
+
+/*****Sensor Temperatura Resistente al Agua****/
+Adafruit_MQTT_Publish sensor_temp_agua_feed = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/tc");
+
 /**** MAPA: desde GPS ****/
-//Adafruit_MQTT_Publish gpsloc = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/gpsloc/csv");
+Adafruit_MQTT_Publish gpsloc = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/gpsloc/csv");
 
 /**** MAPA: desde GSM ****/
-//Adafruit_MQTT_Publish gsmloc = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/gsmloc/csv");
+Adafruit_MQTT_Publish gsmloc = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/gsmloc/csv");
 
 /**** Battery ****/
 Adafruit_MQTT_Publish nivel_bateria = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/nivel_bat");
@@ -124,11 +148,15 @@ Adafruit_MQTT_Subscribe onoffbutton = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAM
 // How many transmission failures in a row we're willing to be ok with before reset
 uint8_t txfailures = 0;
 #define MAXTXFAILURES 3
-
+//unsigned long startMillis;
+//unsigned long currentMillis;
+//const unsigned long period = 1800000;  //the value is a number of milliseconds, ie 1 second
 void setup() {
 
   delay(2000);    //Estabilizaci�n del sistema, requerido para DHT22
-  //dht.begin();
+  dht.begin();
+  sensorDS18B20.begin();
+//  startMillis = millis();
   while (!Serial);
 
   // Watchdog is optional!
@@ -160,8 +188,6 @@ void setup() {
 }
 
 uint32_t x = 0;   //usado para contar
-
-
 
 // Function to connect and reconnect as necessary to the MQTT server.
 // Should be called in the loop function and it will take care if connecting.
@@ -262,8 +288,39 @@ void logTemperatura(uint32_t indicator, Adafruit_MQTT_Publish& publishFeed) {
   }
 
 }
+/*****************Porcentaje de Humedad de suelo ******************************/
+void logHumedadSueloPercent(uint32_t indicator, Adafruit_MQTT_Publish& publishFeed) {
 
+  // Publish
+  Serial.print(F("Publishing Humedad de suelo: "));
+  Serial.println(indicator);
+  if (!publishFeed.publish(indicator)) {
+    Serial.println(F("Publish failed!"));
+    txFailures++;
+  }
+  else {
+    Serial.println(F("Publish succeeded!"));
+    txFailures = 0;
+  }
 
+}
+
+/****************Sensor Temperatura Resistente al Agua ******************************/
+void logTemperaturaContacto(uint32_t indicator, Adafruit_MQTT_Publish& publishFeed) {
+
+  // Publish
+  Serial.print(F("Publishing Temperatura de contacto: "));
+  Serial.println(indicator);
+  if (!publishFeed.publish(indicator)) {
+    Serial.println(F("Publish failed!"));
+    txFailures++;
+  }
+  else {
+    Serial.println(F("Publish succeeded!"));
+    txFailures = 0;
+  }
+
+}
 /*********Porcentaje de Bater�a, m�dulo FONA ***********/
 void logBatteryPercent(uint32_t indicator, Adafruit_MQTT_Publish& publishFeed) {
 
@@ -352,57 +409,73 @@ void logLocationGSM(float latitude, float longitude, Adafruit_MQTT_Publish& publ
 
 void loop() {
   // Make sure to reset watchdog every loop iteration!
-  Watchdog.reset();
+//  currentMillis = 1800000;
+//  if ((currentMillis - startMillis)>= period)
+//  {
+    Watchdog.reset();
 
-  // Ensure the connection to the MQTT server is alive (this will make the first
-  // connection and automatically reconnect when disconnected).  See the MQTT_connect
-  // function definition further below.
-  MQTT_connect();
-  Watchdog.reset();
+    // Ensure the connection to the MQTT server is alive (this will make the first
+    // connection and automatically reconnect when disconnected).  See the MQTT_connect
+    // function definition further below.
+    MQTT_connect();
+    Watchdog.reset();
 
-  //////////////////////////////////////////////////////////////////////////
-  //Adquirimos geolocalizaci�n del m�dulo GPS
-//  float latitude, longitude, speed_kph, heading, altitude;
-//  bool gpsFix = fona.getGPS(&latitude, &longitude, &speed_kph, &heading, &altitude);
-//  Watchdog.reset();
+    //////////////////////////////////////////////////////////////////////////
+    //Adquirimos geolocalizaci�n del m�dulo GPS
+    float latitude, longitude, speed_kph, heading, altitude;
+    bool gpsFix = fona.getGPS(&latitude, &longitude, &speed_kph, &heading, &altitude);
+    Watchdog.reset();
 
-//  //Adquirimos geolocalizaci�n del m�dulo GSM_GPRS
-//  float latitude_gsm, longitude_gsm;
-//  bool gsmloc_success = fona.getGSMLoc(&latitude_gsm, &longitude_gsm);
-//  Watchdog.reset();
+    //  //Adquirimos geolocalizaci�n del m�dulo GSM_GPRS
+    float latitude_gsm, longitude_gsm;
+    bool gsmloc_success = fona.getGSMLoc(&latitude_gsm, &longitude_gsm);
+    Watchdog.reset();
 
-  //nivel bater�a
-  fona.getBattPercent(&vbat);
-  Watchdog.reset();
+    //nivel bater�a
+    fona.getBattPercent(&vbat);
+    Watchdog.reset();
 
-  //nivel de humedad en DHT22;
-  float h = 15;//dht.readHumidity();
-  Watchdog.reset();
+    //nivel de humedad en DHT22;
+    float h = dht.readHumidity();
+    Watchdog.reset();
 
-  //nivel de temperatura en DHT22:
-  float t_c = 11;//dht.readTemperature();    //por defecto se mide en grados Celsius
-  Watchdog.reset();
+    //nivel de temperatura en DHT22:
+    float t_c = dht.readTemperature();    //por defecto se mide en grados Celsius
+    Watchdog.reset();
 
-  //nivel de sensaci�n t�rmica (heat-indicator), medido en �C
-  //float hic = dht.computeHeatIndex(t_c, h);
-  //Watchdog.reset();
+    //nivel de humedad de suelo:
+    float hc = (analogRead(MoistureSensor) * 100) / 950;
+    Watchdog.reset();
 
-  //publicamos los datos
+    //nivel de temperatura de contacto
+    sensorDS18B20.requestTemperatures();
+    delay(2000);
+    Watchdog.reset();
+    float tc = sensorDS18B20.getTempCByIndex(0);
+    Watchdog.reset();
+    //nivel de sensaci�n t�rmica (heat-indicator), medido en �C
+    //float hic = dht.computeHeatIndex(t_c, h);
+    //Watchdog.reset();
 
-  logHumedad(h, dht_hum_feed);
-  logTemperatura(t_c, dht_temp_feed);
-//  logTemperatura(hic, dht_heat_feed);
-//  logLocationGPS(latitude, longitude, altitude, gpsloc);
-//  logLocationGSM(latitude_gsm, longitude_gsm, gsmloc);
-  logBatteryPercent(vbat, nivel_bateria);
+    //publicamos los datos
 
-  //recibimos los datos esperados desde el publisher
-  // this is our 'wait for incoming subscription packets' busy subloop
-  // Adafruit_MQTT_Subscribe *subscription;
-  //  while ((subscription = mqtt.readSubscription(5000))) {
-  //    if (subscription == &onoffbutton) {
-  //      Serial.print(F("Got: "));
-  //      Serial.println((char *)onoffbutton.lastread);
-  //    }
+    logHumedad(h, dht_hum_feed);
+    logTemperatura(t_c, dht_temp_feed);
+    logHumedadSueloPercent(hc, moisture_sensor_feed);
+    logTemperaturaContacto(tc, sensor_temp_agua_feed);
+    //  logTemperatura(hic, dht_heat_feed);
+    logLocationGPS(latitude, longitude, altitude, gpsloc);
+    logLocationGSM(latitude_gsm, longitude_gsm, gsmloc);
+    logBatteryPercent(vbat, nivel_bateria);
+    delay(1800000);
+
+    //recibimos los datos esperados desde el publisher
+    // this is our 'wait for incoming subscription packets' busy subloop
+    // Adafruit_MQTT_Subscribe *subscription;
+    //  while ((subscription = mqtt.readSubscription(5000))) {
+    //    if (subscription == &onoffbutton) {
+    //      Serial.print(F("Got: "));
+    //      Serial.println((char *)onoffbutton.lastread);
+//  startMillis = currentMillis;}
 } //fin_loop()
 
