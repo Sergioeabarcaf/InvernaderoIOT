@@ -1,7 +1,11 @@
 /*
- * Obtener Temperatura, Humedad y Presión
- * en un Frame via ZB
- * Programa desarrollado en PROTEINLAB por Sergio Abarca F 
+ * Programa desarrollado por Sergio Abarca F
+ * 
+  Uso de Frame
+  http://www.libelium.com/downloads/documentation/data_frame_guide.pdf
+  Uso de acelerometro
+  http://www.libelium.com/downloads/documentation/waspmote-accelerometer-programming_guide.pdf
+  
 */
 
 //      Librerias a utilizar
@@ -14,7 +18,7 @@
 //MAC de GW Digi
 char RX_ADDRESS[] = "0013A20040DC588F";
 //ID que usara
-char WASPMOTE_ID[] = "WaspTHP";
+char WASPMOTE_ID[] = "WTHP";
 //Variables a usar
 uint8_t error;
 //====================================================================
@@ -24,6 +28,7 @@ void setup()
   //Inicializador de objetos
   USB.ON();
   Agriculture.ON();
+  //ACC.ON();
   xbeeZB.ON();
   //Verificar la conexion a la red
   checkNetworkParams();
@@ -37,14 +42,18 @@ void loop()
   frame.createFrame(ASCII);
   frame.setFrameSize(92);
   //Cargar parametros al frame
+  frame.addSensor(SENSOR_BAT, (uint8_t) PWR.getBatteryLevel());
+  //frame.addSensor(SENSOR_ACC, ACC.getX(),ACC.getY(),ACC.getZ());
   frame.addSensor(SENSOR_AGR_TC, Agriculture.getTemperature());
   frame.addSensor(SENSOR_AGR_HUM, Agriculture.getHumidity());
   frame.addSensor(SENSOR_AGR_PRES, Agriculture.getPressure());
-  frame.addTimestamp();
-  frame.showFrame();
 
+  //Mostrar Frame
+  frame.showFrame();
+  
   //Enviar
   error = xbeeZB.send(RX_ADDRESS, frame.buffer, frame.length);
+  // Comprobar que el envio sea correcto
   if(error == 0){
     USB.println("Envio OK");
   }
