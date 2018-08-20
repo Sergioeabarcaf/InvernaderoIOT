@@ -53,6 +53,18 @@ void loop()
   USB.println("Encendio bien, esperar 120 segundos para calentar sensor CO2");
   delay(120000);
 
+  USB.print("Bateria: ");
+  USB.println(PWR.getBatteryLevel(),DEC);
+  USB.print("Temperatura: ");
+  USB.println(CO2.getTemp(1));
+  USB.print("Humedad: ");
+  USB.println(CO2.getHumidity());
+  USB.print("Presion: ");
+  USB.println(CO2.getPressure());
+  USB.print("CO2: ");
+  USB.println(CO2.getConc());
+  /*
+
   //Creacion de Frame en modo ASCII
   frame.createFrame(ASCII);
   frame.setFrameSize(92);
@@ -81,6 +93,7 @@ void loop()
   }
 
   USB.println(RTC.getTime());
+  */
 
   //Dormir durante un tiempo
   PWR.deepSleep("00:00:30:00",RTC_OFFSET, RTC_ALM1_MODE4, ALL_ON);
