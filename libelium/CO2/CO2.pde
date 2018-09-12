@@ -34,15 +34,7 @@ Gas CO2(SOCKET_1);
 
 void setup()
 {
-  USB.ON();
-  USB.println("Estoy tratando de encender");
-
-  CO2.ON();
-  //ACC.ON();
-
-  //Inicializar Xbee
-  xbeeZB.ON();
-  checkNetworkParams();
+  setupON();
 
   //Configurar ID de Frame
   frame.setID( WASPMOTE_ID );
@@ -50,6 +42,10 @@ void setup()
 
 void loop()
 {
+  PWR.deepSleep("00:00:01:00",RTC_OFFSET, RTC_ALM1_MODE4, ALL_ON);
+
+  setupON();
+  
   USB.println("Encendio bien, esperar 120 segundos para calentar sensor CO2");
   delay(120000);
 
@@ -80,10 +76,8 @@ void loop()
     USB.println(error);
   }
 
-  USB.println(RTC.getTime());
-
   //Dormir durante un tiempo
-  PWR.deepSleep("00:00:28:00",RTC_OFFSET, RTC_ALM1_MODE4, ALL_ON);
+  PWR.deepSleep("00:00:27:00",RTC_OFFSET, RTC_ALM1_MODE4, ALL_OFF);
 
   // Verificar flag luego de despertar
   if( intFlag & RTC_INT )
@@ -107,3 +101,13 @@ void checkNetworkParams()
   }
   USB.println("Conecto a la red!");
 }
+
+void setupON(){
+  USB.ON();
+  CO2.ON();
+  //ACC.ON()
+  xbeeZB.ON();
+  checkNetworkParams();
+  USB.println("Inicia de manera correcta");
+}
+
