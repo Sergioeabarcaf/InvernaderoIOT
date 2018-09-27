@@ -21,32 +21,26 @@ def send(timestamp,dispositivo,data):
     ref.push(dataSend)
 
 # Actualizar ultimos valores obtenidos
-def updateLast(timestamp,data):
-    param = {}
-    send = {}
-    ref = db.reference('last')
-    for x in range (0, len(data)):
-        parametro = data[x].split(":")
-        send["time"] = timestamp
-        send["value"] = str(parametro[1])
-        param[parametro[0]] = send
-        send = {}
-    print param
-    ref.update(param)
+def updateLast(timestamp,id):
+    urlUpdate = "devices/" + id + "/last"
+    ref = db.reference(urlUpdate)
+    ref.update(timestamp)
 
-def checkData(time,data):
-    param = data.split(":")
-    urlCheck = "last/" + param[0]
+def checkData(time,id):
+    urlCheck = "devices/" + id + "/last"
     ref = db.reference(urlCheck)
     r = ref.get()
     if (r == None):
+        print "no hay datos anteriores"
         return True
     else:
-        if r["time"] == time:
+        if r == time:
+            print "es el mismo dato"
             return False
         else:
-            if r["time"] < time:
+            if r < time:
                 print "el dato es nuevo"
+                return True
             else:
                 print "el dato es viejo"
-            return True
+                return False

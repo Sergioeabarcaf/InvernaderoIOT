@@ -3,7 +3,7 @@ import drm
 import json
 import base64
 
-id = "00:13:A2:00:41:5B:67:F6"
+id = "00:13:A2:00:41:5B:67:EB"
 cantidad = 1
 
 
@@ -14,9 +14,8 @@ dataTime = data['list'][0]['timestamp']
 # Limpiar la data y obtener el dispositivo con sus valores
 data = drm.obtenerDataArduino(dataTime,dataValue)
 
-if goToFirebase.checkData(dataTime, data[0]):
+if goToFirebase.checkData(dataTime, id):
     goToFirebase.send(dataTime,id,data)
-    goToFirebase.updateLast(str(dataTime), data)
+    goToFirebase.updateLast(str(dataTime), id)
 else:
     print "El dato ya habia sido cargado"
-
