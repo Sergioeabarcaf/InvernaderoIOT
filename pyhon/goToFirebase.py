@@ -20,27 +20,27 @@ def send(timestamp,dispositivo,data):
     dataSend["values"] = dataValues
     ref.push(dataSend)
 
-# Actualizar ultimos valores obtenidos
-def updateLast(timestamp,id):
-    urlUpdate = "devices/" + id + "/last"
-    ref = db.reference(urlUpdate)
-    ref.update(timestamp)
-
+# Verificar si el dato es el ultimo obtenido y actualiza este valor
 def checkData(time,id):
     urlCheck = "devices/" + id + "/last"
     ref = db.reference(urlCheck)
     r = ref.get()
     if (r == None):
         print "no hay datos anteriores"
+        ref.set(time)
         return True
     else:
         if r == time:
             print "es el mismo dato"
+            print "firebase: " + r + " == " + time
             return False
         else:
             if r < time:
                 print "el dato es nuevo"
+                print "firebase: " + r + " < " + time
+                ref.set(time)
                 return True
             else:
                 print "el dato es viejo"
+                print "firebase: " + r + " > " + time
                 return False
