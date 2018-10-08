@@ -32,16 +32,11 @@ uint8_t error;
 Gas CO2(SOCKET_1);
 //====================================================================
 
-void setup()
-{
-  setupON();
-
-  //Configurar ID de Frame
-  frame.setID( WASPMOTE_ID );
-}
+void setup() { }
 
 void loop()
 {
+  Utils.setLED(LED1, LED_ON);
   PWR.deepSleep("00:00:01:00",RTC_OFFSET, RTC_ALM1_MODE4, ALL_ON);
 
   setupON();
@@ -49,9 +44,6 @@ void loop()
   USB.println("Encendio bien, esperar 120 segundos para calentar sensor CO2");
   delay(120000);
 
-  //Creacion de Frame en modo ASCII
-  frame.createFrame(ASCII);
-  frame.setFrameSize(92);
   //Cargar los parametros al frame
   frame.addSensor(SENSOR_BAT, (uint8_t) PWR.getBatteryLevel());
   //frame.addSensor(SENSOR_ACC, ACC.getX(),ACC.getY(),ACC.getZ());
@@ -69,15 +61,19 @@ void loop()
   if ( error == 0 )
   {
     USB.println("Envio OK");
+    Utils.blinkGreenLED(330, 3);
   }
   else
   {
+    Utils.blinkLEDs(30000);
     USB.println("ERROR");
     USB.println(error);
   }
 
   //Dormir durante un tiempo
-  PWR.deepSleep("00:00:27:00",RTC_OFFSET, RTC_ALM1_MODE4, ALL_OFF);
+  Utils.setLED(LED1, LED_OFF);
+  Utils.blinkRedLED(1000, 3);
+  PWR.deepSleep("00:00:26:55",RTC_OFFSET, RTC_ALM1_MODE4, ALL_OFF);
 
   // Verificar flag luego de despertar
   if( intFlag & RTC_INT )
@@ -108,6 +104,8 @@ void setupON(){
   //ACC.ON()
   xbeeZB.ON();
   checkNetworkParams();
-  USB.println("Inicia de manera correcta");
+  //Configurar Frame
+  frame.createFrame(ASCII,WASPMOTE_ID);
+  frame.setFrameSize(92);
 }
 

@@ -23,24 +23,15 @@ char WASPMOTE_ID[] = "WTHP";
 uint8_t error;
 //====================================================================
 
-void setup()
-{
-  //Inicializador de objetos
-  USB.ON();
-  Agriculture.ON();
-  //ACC.ON();
-  xbeeZB.ON();
-  //Verificar la conexion a la red
-  checkNetworkParams();
-  //Configurar Frame
-  frame.setID( WASPMOTE_ID );
-}
+void setup() { }
 
 
 void loop()
 {
-  frame.createFrame(ASCII);
-  frame.setFrameSize(92);
+  Utils.setLED(LED1, LED_ON);
+  PWR.deepSleep("00:00:01:00",RTC_OFFSET, RTC_ALM1_MODE4, ALL_ON);
+  setupON();
+  
   //Cargar parametros al frame
   frame.addSensor(SENSOR_BAT, (uint8_t) PWR.getBatteryLevel());
   //frame.addSensor(SENSOR_ACC, ACC.getX(),ACC.getY(),ACC.getZ());
@@ -56,14 +47,18 @@ void loop()
   // Comprobar que el envio sea correcto
   if(error == 0){
     USB.println("Envio OK");
+    Utils.blinkGreenLED(330, 3);
   }
   else{
+    Utils.blinkLEDs(30000);
     USB.print("ERROR: ");
     USB.println(error);
   }
-
+  
   //Dormir durante un tiempo
-  PWR.deepSleep("00:00:30:00",RTC_OFFSET, RTC_ALM1_MODE4, ALL_ON);
+  Utils.setLED(LED1, LED_OFF);
+  Utils.blinkRedLED(1000, 3);
+  PWR.deepSleep("00:00:28:55",RTC_OFFSET, RTC_ALM1_MODE4, ALL_OFF);
 
   // Verificar flag luego de despertar
   if( intFlag & RTC_INT )
@@ -86,3 +81,17 @@ void checkNetworkParams()
   }
   USB.println("Conecto a la red!");
 }
+
+void setupON(){
+  //Inicializador de objetos
+  USB.ON();
+  Agriculture.ON();
+  //ACC.ON();
+  xbeeZB.ON();
+  //Verificar la conexion a la red
+  checkNetworkParams();
+  //Configurar Frame
+  frame.createFrame(ASCII,WASPMOTE_ID);
+  frame.setFrameSize(92);
+}
+
