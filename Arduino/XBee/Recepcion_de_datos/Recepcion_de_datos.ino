@@ -11,60 +11,55 @@ String auxStr;
 int auxInt;
 Rx16Response rx16 = Rx16Response();
 
-//funcion para convertir datos uint8_t a String
-String toString(uint8_t *str){
-    return String((char *)str);
-}
-
 //Extrae el mensaje del frame recibido
 String ObtenerDataFrame(String Frame, int Framelength)
 {
-  //busca en el string el caracter # = 23 (hex)
-  String strAux = "23";  
+  //busca en el string el caracter # = 23 (hex)--> 35 (dec)
+  String strAux = "35";  
   String strAuxmensaje;
   int indice;
   indice = Frame.indexOf(strAux,0);
-  strAuxmensaje = Frame.substring(indice);
+  strAuxmensaje = Frame.substring(indice +2);
   return strAuxmensaje;
 }
+//
+//int getDigitValue(char digit) {
+//  int n = digit-'0';
+//  if (n>=0 && n<10) { return n; }
+//  if (digit=='A') { return 10; }
+//  if (digit=='B') { return 11; }
+//  if (digit=='C') { return 12; }
+//  if (digit=='D') { return 13; }
+//  if (digit=='E') { return 14; }
+//  if (digit=='F') { return 15; }
+//  return -1;
+//}
+//
+//int getPairValue(char digit1, char digit2) {
+//  int v1 = getDigitValue(digit1);
+//  int v2 = getDigitValue(digit2);
+//  return (v1==-1 || v2==-1) ? -1 : v1 * 16 + v2;
+//}
+//
+//bool hexStrToStr(char *dst, const char *src, int size) {
+//  bool isGood = false;
+//  if (size % 2 == 0) {
+//    isGood = true;
+//    for (int i=0; i<size; i+=2) {
+//      int pv = getPairValue(src[i], src[i+1]);
+//      if (pv==-1) { isGood = false; break; }
+//      *dst = pv;
+//      dst++;
+//    }
+//  }
+//  *dst = 0;
+//  return isGood;
+//}
 
-int getDigitValue(char digit) {
-  int n = digit-'0';
-  if (n>=0 && n<10) { return n; }
-  if (digit=='A') { return 10; }
-  if (digit=='B') { return 11; }
-  if (digit=='C') { return 12; }
-  if (digit=='D') { return 13; }
-  if (digit=='E') { return 14; }
-  if (digit=='F') { return 15; }
-  return -1;
-}
-
-int getPairValue(char digit1, char digit2) {
-  int v1 = getDigitValue(digit1);
-  int v2 = getDigitValue(digit2);
-  return (v1==-1 || v2==-1) ? -1 : v1 * 16 + v2;
-}
-
-bool hexStrToStr(char *dst, const char *src, int size) {
-  bool isGood = false;
-  if (size % 2 == 0) {
-    isGood = true;
-    for (int i=0; i<size; i+=2) {
-      int pv = getPairValue(src[i], src[i+1]);
-      if (pv==-1) { isGood = false; break; }
-      *dst = pv;
-      dst++;
-    }
-  }
-  *dst = 0;
-  return isGood;
-}
-
-bool hexStrToStr(char *dst, const char *src) 
-{ 
-  return hexStrToStr(dst, src, strlen(src)); 
-}
+//bool hexStrToStr(char *dst, const char *src) 
+//{ 
+//  return hexStrToStr(dst, src, strlen(src)); 
+//}
 
 
 void setup() 
@@ -79,7 +74,7 @@ void loop()
   //variable para almacenar solo la RF data del Frame
   String datosFrame;
   String auxString;
-  char strAscii(50);
+  char strAscii[50];
   char rfdata[50];
   int longitud;
   
@@ -95,17 +90,63 @@ void loop()
     Serial.print("Mensaje:");
     for (int i = 0; i < rx16.getDataLength(); i++) 
     { 
+    
       Serial.print(rx16.getData(i),DEC); 
       auxString= auxString + String(rx16.getData(i),DEC);
     }
-   longitud = rx16.getDataLength();
-   datosFrame = ObtenerDataFrame(auxString, longitud);
+
+   
+   datosFrame = ObtenerDataFrame(auxString, auxString.length());
+   
    Serial.println("");
    Serial.println("RF DATA :");
    Serial.print(datosFrame);
    datosFrame.toCharArray(rfdata,50);
-   Serial.println(hexStrToStr(strAscii,rfdata));
-   Serial.println(strAscii);
+   Serial.print("\n");
+   delay(2000);
+   
+ 
+   int j=1;
+   String aux;
+   String aux2;
+   String aux12 = "#";
+   char charAux[5];
+   char charAux2;
+   char w;
+
+   //llevar a ascii como son numeros -30
+   for(int i=0;i<datosFrame.length();i=i+2)
+   {
+      if(j<datosFrame.length())
+      {
+      w = datosFrame[i];
+      aux = String(aux +w);
+      w = datosFrame[j];
+      aux2=String(aux2+w);
+      aux12= aux12+aux+aux2;
+      Serial.print("\n");
+      Serial.print(aux12);
+      delay(2000);
+//      strAscii[x] = strcat(aux,rfdata[j]);
+      j = j+2;
+     
+      }
+      aux = "";
+      aux2="";
+      aux12=aux12+"#";
+    
+   }
+
+
+   
+   
+
+   
+   
+   
+  // Serial.println(hexStrToStr(strAscii,rfdata));
+   //Serial.println(strAscii);
+   
   }
   else if(xbee.getResponse().isError()){
    /*-------------------
@@ -116,6 +157,8 @@ void loop()
     Serial.print(xbee.getResponse().getErrorCode(),DEC);
   }
 
-  
+ strcpy(rfdata,"");
+ datosFrame ="";
+ strcpy(strAscii, "");
 
 }
