@@ -22,44 +22,31 @@ String ObtenerDataFrame(String Frame, int Framelength)
   strAuxmensaje = Frame.substring(indice +2);
   return strAuxmensaje;
 }
-//
-//int getDigitValue(char digit) {
-//  int n = digit-'0';
-//  if (n>=0 && n<10) { return n; }
-//  if (digit=='A') { return 10; }
-//  if (digit=='B') { return 11; }
-//  if (digit=='C') { return 12; }
-//  if (digit=='D') { return 13; }
-//  if (digit=='E') { return 14; }
-//  if (digit=='F') { return 15; }
-//  return -1;
-//}
-//
-//int getPairValue(char digit1, char digit2) {
-//  int v1 = getDigitValue(digit1);
-//  int v2 = getDigitValue(digit2);
-//  return (v1==-1 || v2==-1) ? -1 : v1 * 16 + v2;
-//}
-//
-//bool hexStrToStr(char *dst, const char *src, int size) {
-//  bool isGood = false;
-//  if (size % 2 == 0) {
-//    isGood = true;
-//    for (int i=0; i<size; i+=2) {
-//      int pv = getPairValue(src[i], src[i+1]);
-//      if (pv==-1) { isGood = false; break; }
-//      *dst = pv;
-//      dst++;
-//    }
-//  }
-//  *dst = 0;
-//  return isGood;
-//}
 
-//bool hexStrToStr(char *dst, const char *src) 
-//{ 
-//  return hexStrToStr(dst, src, strlen(src)); 
-//}
+
+void ActivarArreglo(String mensaje, int actuadores[])
+{
+   int i = 0;
+   int indice;
+   //Arreglo de 4 elementos
+  while(mensaje.indexOf("#")!=-1)
+  {
+    String strAux = "#";  
+    String strAuxmensaje = "";
+    indice = mensaje.indexOf(strAux);
+    strAuxmensaje = mensaje.substring(indice+1);
+    mensaje = mensaje.substring(indice+2);
+    Serial.print("\n");
+    Serial.print(mensaje.indexOf("#"));
+    actuadores[i] = strAuxmensaje.toInt()- 48;
+    Serial.print("'\n'Actuadores:");
+    Serial.print(actuadores[i]);
+    i= i+1;
+    Serial.print("\n");
+    Serial.print("While.....");
+  }
+  Serial.print("'\n'Fuera del While");
+}
 
 
 void setup() 
@@ -72,14 +59,22 @@ void loop()
 {
  
   //variable para almacenar solo la RF data del Frame
-  String datosFrame;
-  String auxString;
-  char strAscii[50];
-  char rfdata[50];
-  int longitud;
+String datosFrame;
+String auxString;
+char strAscii[50];
+char rfdata[50];
+int j=1;
+String aux;
+String aux2;
+String aux12 = "#";
+char charAux[5];
+char charAux2;
+char w;
+int actuadores[] ={0,0,0,0};
+
   
-//se espera la llegada de un paquete durante 100milliseg antes de continuar
-  xbee.readPacket(500) ;
+//se espera la llegada de un paquete durante 500milliseg antes de continuar
+  xbee.readPacket() ;
   if (xbee.getResponse().isAvailable()) {
     //Se leyo algo
     Serial.println("LLego Mensaje");
@@ -103,45 +98,38 @@ void loop()
    Serial.print(datosFrame);
    datosFrame.toCharArray(rfdata,50);
    Serial.print("\n");
-   delay(2000);
-   
- 
-   int j=1;
-   String aux;
-   String aux2;
-   String aux12 = "#";
-   char charAux[5];
-   char charAux2;
-   char w;
-
-   //llevar a ascii como son numeros -30
+   delay(200);
+  
+   //llevar a ascii como son numeros -48
    for(int i=0;i<datosFrame.length();i=i+2)
    {
       if(j<datosFrame.length())
       {
+        //w char auxiliar para concatenar
       w = datosFrame[i];
       aux = String(aux +w);
       w = datosFrame[j];
-      aux2=String(aux2+w);
+      aux2=String(aux2+ w);
       aux12= aux12+aux+aux2;
       Serial.print("\n");
       Serial.print(aux12);
       delay(2000);
-//      strAscii[x] = strcat(aux,rfdata[j]);
       j = j+2;
-     
       }
       aux = "";
       aux2="";
       aux12=aux12+"#";
     
    }
+  
+   ActivarArreglo(aux12,actuadores);
+   Serial.print("\n");
+   Serial.println("Arreglo");
+   for(int i=0;i<sizeof(actuadores) / sizeof(actuadores[0]);i++){
+      Serial.print("\n");
+      Serial.print(actuadores[i]);
+   }
 
-
-   
-   
-
-   
    
    
   // Serial.println(hexStrToStr(strAscii,rfdata));
@@ -160,5 +148,5 @@ void loop()
  strcpy(rfdata,"");
  datosFrame ="";
  strcpy(strAscii, "");
-
+ memset(actuadores, 0, sizeof(actuadores));
 }
