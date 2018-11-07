@@ -24,12 +24,17 @@ String ObtenerDataFrame(String Frame, int Framelength)
 }
 
 
-void ActivarArreglo(String mensaje, int actuadores[])
+void ActivarArreglo(String mensaje, int actuadores[],int inicio)
 {
-   int i = 0;
+   
    int indice;
    //Arreglo de 4 elementos
-  while(mensaje.indexOf("#")!=-1)
+   do{
+  if(mensaje.indexOf("#")==-1)
+  {
+    break;
+  }
+  else 
   {
     String strAux = "#";  
     String strAuxmensaje = "";
@@ -38,13 +43,14 @@ void ActivarArreglo(String mensaje, int actuadores[])
     mensaje = mensaje.substring(indice+2);
     Serial.print("\n");
     Serial.print(mensaje.indexOf("#"));
-    actuadores[i] = strAuxmensaje.toInt()- 48;
+    actuadores[inicio] = strAuxmensaje.toInt()- 48;
     Serial.print("'\n'Actuadores:");
-    Serial.print(actuadores[i]);
-    i= i+1;
+    Serial.print(actuadores[inicio]);
     Serial.print("\n");
     Serial.print("While.....");
+    ActivarArreglo(mensaje,actuadores,inicio+1);
   }
+   }while(0);
   Serial.print("'\n'Fuera del While");
 }
 
@@ -70,16 +76,18 @@ String aux12 = "#";
 char charAux[5];
 char charAux2;
 char w;
+//Actuadores que luego se mandaran a activar
 int actuadores[] ={0,0,0,0};
 
   
 //se espera la llegada de un paquete durante 500milliseg antes de continuar
-  xbee.readPacket() ;
+  xbee.readPacket(500) ;
   if (xbee.getResponse().isAvailable()) {
     //Se leyo algo
     Serial.println("LLego Mensaje");
     xbee.getResponse().getRx16Response(rx16);
     rx16.getRemoteAddress16();
+    //Received Signal Strength
     Serial.println(F("Señal: "));
     rx16.getRssi();
     Serial.print("Mensaje:");
@@ -122,7 +130,7 @@ int actuadores[] ={0,0,0,0};
     
    }
   
-   ActivarArreglo(aux12,actuadores);
+   ActivarArreglo(aux12,actuadores,0);
    Serial.print("\n");
    Serial.println("Arreglo");
    for(int i=0;i<sizeof(actuadores) / sizeof(actuadores[0]);i++){
@@ -150,3 +158,4 @@ int actuadores[] ={0,0,0,0};
  strcpy(strAscii, "");
  memset(actuadores, 0, sizeof(actuadores));
 }
+
