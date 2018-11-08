@@ -1,5 +1,22 @@
 #include <XBee.h> 
 #include <string.h>
+#define led 7
+
+//--------------------------------------
+//Actadores
+
+//1 = Riego
+//2 = Ventilador1
+//3 = Ventilador2
+//4 = Ventilador3
+
+//Estados
+//0
+//1
+
+//Mensaje Formato
+
+//#ActuadorEstado#Actuador2Estado2#Actuador3Estado3#Actuador4Estado4
 
 //---------------------------------------
 XBee xbee = XBee();
@@ -9,56 +26,58 @@ char data[15];
 uint8_t posicionDatos;
 String auxStr;
 int auxInt;
+
 Rx16Response rx16 = Rx16Response();
 
-//Extrae el mensaje del frame recibido
+//Extrae el mensaje del frame recibido 6422088143001354948355048
+
+
 String ObtenerDataFrame(String Frame, int Framelength)
 {
   //busca en el string el caracter # = 23 (hex)--> 35 (dec)
+  //#ActuadorEstado
   String strAux = "35";  
   String strAuxmensaje;
   int indice;
   indice = Frame.indexOf(strAux,0);
-  strAuxmensaje = Frame.substring(indice +2);
-  return strAuxmensaje;
+  //particiona el string en el indice encontrado de #
+  strAuxmensaje = Frame.substring(indice);
+  return strAuxmensaje; //354948355048
 }
 
 
 void ActivarArreglo(String mensaje, int actuadores[],int inicio)
 {
-   
+   //mensaje = 354948355048
    int indice;
    //Arreglo de 4 elementos
    do{
-  if(mensaje.indexOf("#")==-1)
+  if(mensaje.indexOf("35")==-1)
   {
     break;
   }
   else 
   {
-    String strAux = "#";  
+    
     String strAuxmensaje = "";
-    indice = mensaje.indexOf(strAux);
-    strAuxmensaje = mensaje.substring(indice+1);
-    mensaje = mensaje.substring(indice+2);
-    Serial.print("\n");
-    Serial.print(mensaje.indexOf("#"));
-    actuadores[inicio] = strAuxmensaje.toInt()- 48;
-    Serial.print("'\n'Actuadores:");
-    Serial.print(actuadores[inicio]);
-    Serial.print("\n");
-    Serial.print("While.....");
+    indice = mensaje.indexOf("35");
+    strAuxmensaje = mensaje.substring(indice+2,indice+6);
+    //4948 //5048
+    mensaje = mensaje.substring(indice+4);
+    //mensaje = 355048
+    actuadores[inicio] = strAuxmensaje.toInt();
     ActivarArreglo(mensaje,actuadores,inicio+1);
   }
    }while(0);
-  Serial.print("'\n'Fuera del While");
-}
+ }
 
 
 void setup() 
 {
+  pinMode(led , OUTPUT);
   Serial.begin(9600);
   xbee.setSerial(Serial);
+
 }
 
 void loop()
@@ -69,15 +88,12 @@ String datosFrame;
 String auxString;
 char strAscii[50];
 char rfdata[50];
-int j=1;
-String aux;
-String aux2;
-String aux12 = "#";
-char charAux[5];
-char charAux2;
-char w;
+
+
 //Actuadores que luego se mandaran a activar
 int actuadores[] ={0,0,0,0};
+
+
 
   
 //se espera la llegada de un paquete durante 500milliseg antes de continuar
@@ -108,41 +124,65 @@ int actuadores[] ={0,0,0,0};
    Serial.print("\n");
    delay(200);
   
-   //llevar a ascii como son numeros -48
-   for(int i=0;i<datosFrame.length();i=i+2)
-   {
-      if(j<datosFrame.length())
-      {
-        //w char auxiliar para concatenar
-      w = datosFrame[i];
-      aux = String(aux +w);
-      w = datosFrame[j];
-      aux2=String(aux2+ w);
-      aux12= aux12+aux+aux2;
-      Serial.print("\n");
-      Serial.print(aux12);
-      delay(2000);
-      j = j+2;
-      }
-      aux = "";
-      aux2="";
-      aux12=aux12+"#";
-    
-   }
-  
-   ActivarArreglo(aux12,actuadores,0);
-   Serial.print("\n");
-   Serial.println("Arreglo");
+   ActivarArreglo(datosFrame,actuadores,0);
+ 
    for(int i=0;i<sizeof(actuadores) / sizeof(actuadores[0]);i++){
-      Serial.print("\n");
-      Serial.print(actuadores[i]);
+      
+  //Ascii -- Decimal
+      //48-0
+      //49-1
+      //50-2
+      //51-3
+      //52-4
+      switch(actuadores[i])
+      {
+        case 4948:
+        {
+          Serial.println("Apagar Riego");
+          digitalWrite(led, LOW);
+          break;
+        }
+        case 4949:
+         {
+          Serial.println("Encender Riego");
+          digitalWrite(led, HIGH);
+          
+          break;
+         }
+        case 5048:
+        {
+          Serial.println("Apagar Ventilador 1");
+          break;
+        }
+        case 5049:
+         {
+          Serial.println("Encender Ventilador 1");
+          break;
+         }
+        case 5148:
+          {
+            Serial.println("apagar Ventilador 2");
+          break;
+          }
+        case 5149:
+          {
+            Serial.println("encender Ventilador 2");
+            break;
+          }
+        case 5248:
+        {
+          Serial.println("apagar Ventilador 3");
+          break;
+        }
+        case 5249:
+         {
+          Serial.println("encender Ventilador 3");
+          break;
+         }
+        default:
+          break;
+      }
    }
-
-   
-   
-  // Serial.println(hexStrToStr(strAscii,rfdata));
-   //Serial.println(strAscii);
-   
   }
   else if(xbee.getResponse().isError()){
    /*-------------------
@@ -153,6 +193,7 @@ int actuadores[] ={0,0,0,0};
     Serial.print(xbee.getResponse().getErrorCode(),DEC);
   }
 
+ //Limpieza de Variables------------------------------
  strcpy(rfdata,"");
  datosFrame ="";
  strcpy(strAscii, "");

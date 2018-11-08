@@ -19,10 +19,18 @@ import base64
 strAux ="%s:%s"%(username,password)
 auth =(base64.b64encode(bytes(strAux,'utf-8')))
 auth =auth.decode('utf-8')
-
+auxmensaje = input("mensaje:")
 #Autorizacion chequeo
 print (auth)
-mensaje = base64.b64encode(bytes("Estado OFF",'utf-8'))
+#mensaje a bytes y codificado en b64
+#donde #12 --- 1 y 2 son identificadores de actuadores
+
+mensaje = base64.b64encode(bytes(auxmensaje,'utf-8'))
+#decodificado para quitar el b' que corresponde a bytes
+mensaje = str(mensaje.decode('utf-8'))
+#0013A200415B67F6 --> r-invernadero
+#0013A200415B67E9 --> board dev
+
 # message to send to server
 message = """<sci_request version="1.0">
 <send_message cache = "false">
