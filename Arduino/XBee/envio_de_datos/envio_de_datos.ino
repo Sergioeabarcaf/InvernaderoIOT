@@ -1,9 +1,7 @@
+#include <DHT.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
-
-//#include <avr/dtostrf.h>
 #include <stdlib.h>
-#include <DHT.h>
 #include <XBee.h>
 
 #define pindht 4
@@ -24,6 +22,8 @@ XBeeAddress64 addr64 = XBeeAddress64(0x0013a200, 0x40dc588f);
 
 //variable mensaje
 char payload[50];
+char aux[10];
+
 //variable para el estado del envio
 ZBTxStatusResponse txStatus = ZBTxStatusResponse();
 
@@ -34,10 +34,6 @@ void floatAchar(float num, char resultado[10])
   dtostrf(num, 5, 2, resultado);
 
 }
-
-
-char aux[10];
-
 //30 min 1800000 ;
 
 void setup()
@@ -54,31 +50,35 @@ void loop()
   // Se ajustan los valores del fc-28
   
   int humedad_suelo = analogRead(pinhc); 
-  float porcentaje = (100*humedad_suelo)/700;
+  Serial.println(humedad_suelo);
+  float porcentaje = (100*humedad_suelo)/950;
   //lectura temperatura de contacto DS18B20
   sensorDS18B20.requestTemperatures();
-
+  delay(2000);
   //lectura de sensor dht11
   float humedad = dht.readHumidity();
   float temperatura = dht.readTemperature();
-
   //chequeo si son valores nulos
   if (!isnan(temperatura) && !isnan(humedad) && !isnan(humedad_suelo))
   {
     floatAchar(humedad, aux);
+    Serial.print(aux);
     strcpy(payload, "H :");
     strcat(payload, aux);
     strcat(payload, "#");
     floatAchar(temperatura, aux);
+    Serial.print(aux);
     strcat(payload, "T :");
     strcat(payload, aux);
     strcat(payload, "#");
     floatAchar(sensorDS18B20.getTempCByIndex(0), aux);
     strcat(payload, "Tc :");
+    Serial.print(aux);
     strcat(payload, aux);
     strcat(payload, "#");
     floatAchar(porcentaje, aux);
     strcat(payload, "Hc :");
+    Serial.print(aux);
     strcat(payload, aux);
     strcat(payload, "#");
 
@@ -127,5 +127,6 @@ void loop()
 
   delay(1800000);
 }
+
 
 
