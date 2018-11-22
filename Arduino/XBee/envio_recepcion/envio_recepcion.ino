@@ -72,11 +72,10 @@ void ActivarArreglo(String mensaje, int actuadores[],int inicio)
    //mensaje = 354948355048
    int indice;
    //Arreglo de 4 elementos
-   do{
-  //split segun # hasta que se retorne -1
+   //split segun # hasta que se retorne -1
   if(mensaje.indexOf("35")==-1)
   {
-    break;
+
   }
   else 
   {
@@ -90,11 +89,10 @@ void ActivarArreglo(String mensaje, int actuadores[],int inicio)
     actuadores[inicio] = strAuxmensaje.toInt();
     ActivarArreglo(mensaje,actuadores,inicio+1);
   }
-   }while(0);
  }
 
-int period = 1800000;
-unsigned long time_now = 0;
+long period = 1800000;
+long previotiempo= 0;
 
 void setup() {
   Serial.begin(9600);
@@ -105,6 +103,8 @@ void setup() {
 }
 
 void loop() {
+
+unsigned long tiempoactual = 0;
 //variable para almacenar solo la RF data del Frame
 String datosFrame;
 String auxString;
@@ -121,10 +121,10 @@ String auxStr;
 int auxInt;
 
 //tiempo
-
-if(millis()>time_now + period)
+tiempoactual=millis();
+if(tiempoactual - previotiempo > period)
 {
-  time_now= millis();
+  previotiempo= millis();
   // Se ajustan los valores del fc-28
   int humedad_suelo = analogRead(pinhc); 
   float porcentaje = (100*humedad_suelo)/950;
