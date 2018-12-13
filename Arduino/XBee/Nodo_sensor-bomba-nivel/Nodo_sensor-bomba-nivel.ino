@@ -152,7 +152,7 @@ void NiveldeAgua()
 {
   char arreglo[50];
   char aux[10];
-    if(auxWaterLevel- WaterLevel>=1)
+    if(auxWaterLevel- WaterLevel>=1 || WaterLevel - auxWaterLevel >=1)
     {
       WaterLevel = auxWaterLevel;
       memset(arreglo,0, sizeof(arreglo));
@@ -230,6 +230,8 @@ void loop()
    Serial.print("\n");
    delay(200);
    ActivarArreglo(datosFrame,actuadores,0);
+   char arreglo[50];
+   memset(arreglo, 0, sizeof(arreglo));
    for(int i=0;i<sizeof(actuadores) / sizeof(actuadores[0]);i++){
          
   //Ascii -- Decimal
@@ -244,6 +246,7 @@ void loop()
         {
           Serial.println("Apagar Riego");
           digitalWrite(relay1, LOW);
+          NiveldeAgua();
           Serial.print("Nivel de Agua:");
           Serial.println(auxWaterLevel);
           break;
@@ -251,10 +254,12 @@ void loop()
         case 4949:
          {
           Serial.println("Encender Riego");
-          
           if (auxWaterLevel >=5)
           {
             floatAchar(auxWaterLevel, aux);
+            strcpy(arreglo, "WaterLv:");
+            strcat(arreglo, aux);
+            strcat(arreglo, "#");
             Serial.print("Tanque Sin Agua");
            }
           else
