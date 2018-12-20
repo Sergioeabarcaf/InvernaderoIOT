@@ -198,12 +198,7 @@ void loop()
   uint8_t posicionDatos;
   String auxStr;
   int auxInt;
-  auxWaterLevel = DistanciatoCm();
-  NiveldeAgua();
-  Serial.print("aux :");
-  Serial.println(WaterLevel);
-  Serial.print("aux Agua:");
-  Serial.println(auxWaterLevel);
+
 
 //Recepcion Mensaje----------------------------------------
 
@@ -246,6 +241,7 @@ void loop()
         {
           Serial.println("Apagar Riego");
           digitalWrite(relay1, LOW);
+          auxWaterLevel = DistanciatoCm();
           NiveldeAgua();
           Serial.print("Nivel de Agua:");
           Serial.println(auxWaterLevel);
@@ -253,17 +249,29 @@ void loop()
         }
         case 4949:
          {
-          Serial.println("Encender Riego");
+         Serial.println("Encender Riego");
+          auxWaterLevel = DistanciatoCm();
           if (auxWaterLevel >=5)
           {
-            floatAchar(auxWaterLevel, aux);
-            strcpy(arreglo, "WaterLv:");
-            strcat(arreglo, aux);
+            strcpy(arreglo, "S1:");
+            strcat(arreglo, "0");
             strcat(arreglo, "#");
-            Serial.print("Tanque Sin Agua");
+            ZBTxRequest mensaje = ZBTxRequest(addr64, (uint8_t*)arreglo, sizeof(arreglo));
+            xbee.send(mensaje);
+            EnvioMensaje();
+            delay(60000);
            }
           else
+          {
             digitalWrite(relay1,HIGH);
+            strcpy(arreglo, "S1:");
+            strcat(arreglo, "1");
+            strcat(arreglo, "#");
+            ZBTxRequest mensaje = ZBTxRequest(addr64, (uint8_t*)arreglo, sizeof(arreglo));
+            xbee.send(mensaje);
+            EnvioMensaje();
+          }
+                    
           break;
          }
         case 5048:
@@ -315,6 +323,18 @@ void loop()
     3 - UNEXPECTED_START_BYTE*/
     Serial.print("Codigo de Error: ");
     Serial.print(xbee.getResponse().getErrorCode(),DEC);
+  }
+
+  else
+  {
+    auxWaterLevel = DistanciatoCm();
+    NiveldeAgua();
+    Serial.print("aux :");
+    Serial.println(WaterLevel);
+    Serial.print("aux Agua:");
+    Serial.println(auxWaterLevel);
+    delay(5000);
+    
   }
   //Limpieza mensaje
   strcpy(payload, "");
