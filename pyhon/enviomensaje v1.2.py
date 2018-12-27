@@ -10,7 +10,7 @@ default_app = firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://invernadero-221913.firebaseio.com/'})
 
 # now print out the entire event object
-Actuador = "00:13:A2:00:41:5B:67:F6"
+Actuador = "00:13:A2:00:41:54:B4:E8"
 urlDevice = 'Actuadores/' +Actuador 
 ref = db.reference(urlDevice)
 auxmensaje = input("mensaje:")
@@ -23,10 +23,7 @@ strAux = base64.b64decode(bytes(strAux,'utf-8'))
 strAux = strAux.decode('utf-8')
 dataSend["Actualizacion"] = strAux
 timestamp = time.strftime("%Y-%m-%dT%H:%M:%S",time.localtime())
-dataSend["timestamp"] = timestamp
-url = 'System/Python'
-db.reference(url).set(True)
-                          
+dataSend["timestamp"] = timestamp                    
     
 #Lectura de datos Firebase
 #-------------------------------------------------
@@ -74,19 +71,24 @@ response_body = response.read()
 # print the output to standard out
 print (statuscode, statusmessage)
 print (response_body)
-
-url = 'System/State'
-state = db.reference(url).get()
-while(state!=False):
-    print("Esperando")
-    time.sleep(60)
+response_body = str(response_body).split(">")
+if (statuscode == 200 and "failure" not in response_body[9]):
+    url = 'System/Python'
+    db.reference(url).set(True)
+    url = 'System/State'
     state = db.reference(url).get()
-   
+    while(state!=False):
+        print("Esperando")
+        time.sleep(15)
+        state = db.reference("System/State").get()
+    time.sleep(5)   
+    estado = db.reference("Actuadores/State").get()
+    dataSend["Estado"] = estado
+else:
+    estado = 0
+    dataSend["Estado"] = estado
     
+ref.push(dataSend)
+time.sleep(5)
+db.reference('Actuadores/State').set("?")
 db.reference("System/Python").set(False)
-
-url = 'Actuadores/State1'
-estado = db.reference(url).get()
-dataSend["Estado"] = estado
-
-ref.push(dataSend)   
