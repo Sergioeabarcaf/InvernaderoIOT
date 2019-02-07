@@ -1,6 +1,7 @@
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
+import datetime
 
 cred = credentials.Certificate('dogKey.json')
 default_app = firebase_admin.initialize_app(cred, {
@@ -25,6 +26,7 @@ def checkData(time,id):
     urlCheck = "devices/" + id + "/last"
     ref = db.reference(urlCheck)
     r = ref.get()
+    # errorSend(time,r)
     if (r == None):
         print "no hay datos anteriores"
         ref.set(time)
@@ -44,3 +46,9 @@ def checkData(time,id):
                 print "el dato es viejo"
                 print "firebase: " + r + " > " + time
                 return False
+
+def errorSend(act,pas):
+    timeAct = datetime.datetime.strptime(act, '%Y-%m-%dT%H:%M:%S.%fZ')
+    timePas = datetime.datetime.strptime(pas, '%Y-%m-%dT%H:%M:%S.%fZ')
+    diff = timeAct - timePas
+    print diff
