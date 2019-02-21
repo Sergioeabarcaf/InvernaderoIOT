@@ -3,7 +3,7 @@ from firebase_admin import credentials
 from firebase_admin import db
 import datetime
 
-cred = credentials.Certificate('dogKey.json')
+cred = credentials.Certificate('/home/InvernaderoIOT/pyhon/dogKey.json')
 default_app = firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://libelium-91af3.firebaseio.com/'
 })
