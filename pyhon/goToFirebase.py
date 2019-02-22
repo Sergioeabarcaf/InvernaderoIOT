@@ -3,7 +3,7 @@ from firebase_admin import credentials
 from firebase_admin import db
 import datetime
 
-cred = credentials.Certificate('/home/InvernaderoIOT/pyhon/dogKey.json')
+cred = credentials.Certificate('dogKey.json')
 default_app = firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://libelium-91af3.firebaseio.com/'
 })
@@ -26,29 +26,34 @@ def checkData(time,id):
     urlCheck = "devices/" + id + "/last"
     ref = db.reference(urlCheck)
     r = ref.get()
-    # errorSend(time,r)
-    if (r == None):
+    if r == None:
         print "no hay datos anteriores"
         ref.set(time)
         return True
-    else:
-        if r == time:
-            print "es el mismo dato"
-            print "firebase: " + r + " == " + time
-            return False
-        else:
-            if r < time:
-                print "el dato es nuevo"
-                print "firebase: " + r + " < " + time
-                ref.set(time)
-                return True
-            else:
-                print "el dato es viejo"
-                print "firebase: " + r + " > " + time
-                return False
+    if r == time:
+        print "es el mismo dato"
+        print "firebase: " + r + " == " + time
+        return 0
+    if r < time:
+        print "el dato es nuevo"
+        print "firebase: " + r + " < " + time
+        ref.set(time)
+        return True
+    if r > time:
+        print "el dato es viejo"
+        print "firebase: " + r + " > " + time
+        return 0
+    return False
 
-def errorSend(act,pas):
-    timeAct = datetime.datetime.strptime(act, '%Y-%m-%dT%H:%M:%S.%fZ')
-    timePas = datetime.datetime.strptime(pas, '%Y-%m-%dT%H:%M:%S.%fZ')
+# Validar que la diferencia de tiempo sea menor a 30 minutos con respecto a la hora actual.
+def validDiference30Minutes(id):
+    #Obtener la ultima fecha almacenada en el dispositivo y transformarla a formato datetime.
+    urlCheck = "devices/" + id + "/last"
+    ref = db.reference(urlCheck)
+    r = ref.get()
+    timePas = datetime.datetime.strptime(r, '%Y-%m-%dT%H:%M:%S.%fZ')
+    # Obtener fecha actual en formato datetime y calcular la diferencia entre ambas fechas (Formato UTC).
+    timeAct = datetime.datetime.utcnow()
     diff = timeAct - timePas
-    print diff
+    # Retornar la diferencia entre ellos transformada en cantidad de datos a solicitar.
+    return (diff.days * 48) + (diff.seconds / 1800)
