@@ -6,6 +6,7 @@ import time
 import conection
 import timeCustom
 import log
+import sys
 
 id = ["00:13:A2:00:41:04:37:F1","00:13:A2:00:41:5B:67:EB"]
 
@@ -28,4 +29,4 @@ try:
             log.recivedLog(timeCustom.getCurrenDateAndTimeSTR())
         time.sleep(60)
 except:
-    log.recivedExcept(timeCustom.getCurrenDateAndTimeSTR(), sys.exc_info()[0])
+    log.recivedExcept(timeCustom.getCurrenDateAndTimeSTR(), sys.exc_info())

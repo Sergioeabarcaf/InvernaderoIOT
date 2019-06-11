@@ -45,6 +45,10 @@ def recivedLog(datetime):
 # Funcion para almacenar en archivo TXT el error de la exception
 def recivedExcept(datetime, error):
     f = open("./error.txt", "a")
-    f.write(datetime + " | " + error + "  \n")
+    f.write("=====================")
+    f.write(datetime + "  \n")
+    f.write(error[0])
+    f.write("\n")
+    f.write(error[1])
     f.close()
     return True
